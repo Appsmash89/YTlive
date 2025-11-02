@@ -65,35 +65,26 @@ const ControlPanel = ({
   onToggleStreaming,
 }: ControlPanelProps) => {
   return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Youtube className="h-5 w-5 text-red-500" />
-            Stream Controls
-          </CardTitle>
-          <CardDescription>Connect to your stream and manage settings.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="stream-url">YouTube Stream URL</Label>
-            <Input id="stream-url" placeholder="https://youtube.com/live/..." />
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="stream-url">YouTube Stream URL</Label>
+          <Input id="stream-url" placeholder="https://youtube.com/live/..." />
+        </div>
+        <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+          <div className="space-y-0.5">
+            <Label htmlFor="stream-status">Live Comments</Label>
+            <p className="text-xs text-muted-foreground">
+              {isStreaming ? 'Simulating live comments.' : 'Simulation paused.'}
+            </p>
           </div>
-          <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
-            <div className="space-y-0.5">
-              <Label htmlFor="stream-status">Live Comments</Label>
-              <p className="text-xs text-muted-foreground">
-                {isStreaming ? 'Simulating live comments.' : 'Simulation paused.'}
-              </p>
-            </div>
-            <Switch
-              id="stream-status"
-              checked={isStreaming}
-              onCheckedChange={onToggleStreaming}
-              aria-label="Toggle comment stream"
-            />
-          </div>
-        </CardContent>
-      </Card>
+          <Switch
+            id="stream-status"
+            checked={isStreaming}
+            onCheckedChange={onToggleStreaming}
+            aria-label="Toggle comment stream"
+          />
+        </div>
+      </CardContent>
   );
 };
 

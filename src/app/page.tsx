@@ -21,7 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Youtube, Bug } from 'lucide-react';
+import { Youtube, Bug, Settings2, Languages } from 'lucide-react';
 
 const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries'];
 
@@ -92,16 +92,35 @@ export default function Home() {
       <main className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
           <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
-            <ControlPanel
-              isStreaming={isStreaming}
-              onToggleStreaming={() => setIsStreaming(prev => !prev)}
-            />
-             <Accordion type="multiple" defaultValue={['item-1', 'item-2']} className="w-full space-y-6">
-              <AccordionItem value="item-1" className="border-none">
+             <Accordion type="multiple" defaultValue={['stream-controls', 'keyword-recognition', 'dev-tools']} className="w-full space-y-6">
+               <AccordionItem value="stream-controls" className="border-none">
+                  <Card>
+                    <AccordionTrigger className="p-6 hover:no-underline">
+                      <CardHeader className="p-0">
+                        <CardTitle className="flex items-center gap-2">
+                           <Youtube className="h-5 w-5 text-red-500" />
+                           Stream Controls
+                        </CardTitle>
+                        <CardDescription>Connect to your stream and manage settings.</CardDescription>
+                      </CardHeader>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ControlPanel
+                        isStreaming={isStreaming}
+                        onToggleStreaming={() => setIsStreaming(prev => !prev)}
+                      />
+                    </AccordionContent>
+                  </Card>
+                </AccordionItem>
+
+              <AccordionItem value="keyword-recognition" className="border-none">
                 <Card>
                   <AccordionTrigger className="p-6 hover:no-underline">
                       <CardHeader className="p-0">
-                        <CardTitle>Keyword Recognition</CardTitle>
+                        <CardTitle className="flex items-center gap-2">
+                          <Languages className="h-5 w-5" />
+                          Keyword Recognition
+                        </CardTitle>
                         <CardDescription>Add or remove keywords for command recognition.</CardDescription>
                       </CardHeader>
                   </AccordionTrigger>
@@ -114,7 +133,8 @@ export default function Home() {
                   </AccordionContent>
                 </Card>
               </AccordionItem>
-              <AccordionItem value="item-2" className="border-none">
+
+              <AccordionItem value="dev-tools" className="border-none">
                 <Card>
                     <AccordionTrigger className="p-6 hover:no-underline">
                         <CardHeader className="p-0">
@@ -122,7 +142,7 @@ export default function Home() {
                                 <Bug className="h-5 w-5" />
                                 Dev Tools
                             </CardTitle>
-                             <CardDescription>Manually send comments to the feed for testing purposes.</CardDescription>
+                             <CardDescription>Manually send comments for testing purposes.</CardDescription>
                         </CardHeader>
                     </AccordionTrigger>
                     <AccordionContent>
@@ -137,14 +157,14 @@ export default function Home() {
                <DisplayViewport activeMedia={activeMedia} />
              </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
-                <div className="h-full flex flex-col">
+                <div className="flex flex-col">
                     <CommentFeed
                       onNewComment={handleNewComment}
                       isStreaming={isStreaming}
                       isProcessing={isProcessing}
                     />
                 </div>
-                <div className="h-full flex flex-col">
+                <div className="flex flex-col">
                     <CommandLogDisplay history={commandHistory} />
                 </div>
              </div>
