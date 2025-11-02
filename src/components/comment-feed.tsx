@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from 'react';
@@ -18,16 +19,23 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [internalComments, setInternalComments] = useState<Comment[]>([]);
 
-  const handleNewComment = useCallback(() => {
-    onNewComment(generateMockComment());
+  const handleNewComment = useCallback((comment: Comment) => {
+    setInternalComments((prev) => [comment, ...prev].slice(0, 50));
+    onNewComment(comment);
   }, [onNewComment]);
+
+  const startStreaming = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      handleNewComment(generateMockComment());
+    }, 3000);
+  }, [handleNewComment]);
 
   useEffect(() => {
     if (isStreaming) {
-      intervalRef.current = setInterval(() => {
-        handleNewComment();
-      }, 3000);
+      startStreaming();
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -37,7 +45,7 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
         clearInterval(intervalRef.current);
       }
     };
-  }, [isStreaming, handleNewComment]);
+  }, [isStreaming, startStreaming]);
 
   useEffect(() => {
     if (commentsContainerRef.current) {
@@ -47,7 +55,7 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
         behavior: 'smooth',
       });
     }
-  }, [onNewComment]);
+  }, [internalComments]);
 
 
   return (
@@ -62,60 +70,31 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
       <CardContent className="flex-1 overflow-hidden p-0">
         <ScrollArea className="h-full" ref={commentsContainerRef}>
             <div className="p-4 space-y-4" ref={scrollAreaRef}>
-                <InternalFeed onNewComment={onNewComment}/>
+                {internalComments.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+                        <MessagesSquare className="h-10 w-10 mb-4" />
+                        <p className="font-medium">Comments will appear here</p>
+                        <p className="text-sm">Enable "Live Comments" in the control panel to start the simulation.</p>
+                    </div>
+                ) : (
+                    internalComments.slice().reverse().map((comment) => (
+                    <div key={comment.id} className="flex items-start gap-3">
+                        <Avatar className="h-8 w-8 border">
+                        <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
+                        <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm">
+                        <p className="font-semibold">{comment.author.name}</p>
+                        <p className="text-muted-foreground">{comment.text}</p>
+                        </div>
+                    </div>
+                    ))
+                )}
             </div>
         </ScrollArea>
       </CardContent>
     </Card>
   );
 };
-
-
-const InternalFeed = ({ onNewComment }: { onNewComment: (comment: Comment) => void }) => {
-    const [comments, setComments] = useState<Comment[]>([]);
-    
-    useEffect(() => {
-        const handler = (comment: Comment) => {
-            setComments((prev) => [comment, ...prev].slice(0, 50));
-        }
-
-        const originalOnNewComment = onNewComment;
-        (onNewComment as any) = handler;
-
-        return () => {
-            (onNewComment as any) = originalOnNewComment;
-        }
-
-    }, [onNewComment]);
-
-    if (comments.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-                <MessagesSquare className="h-10 w-10 mb-4" />
-                <p className="font-medium">Comments will appear here</p>
-                <p className="text-sm">Enable "Live Comments" in the control panel to start the simulation.</p>
-            </div>
-        )
-    }
-
-    return (
-        <>
-            {comments.map((comment) => (
-            <div key={comment.id} className="flex items-start gap-3">
-                <Avatar className="h-8 w-8 border">
-                <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
-                <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="text-sm">
-                <p className="font-semibold">{comment.author.name}</p>
-                <p className="text-muted-foreground">{comment.text}</p>
-                </div>
-            </div>
-            )).reverse()
-        }
-        </>
-    );
-};
-
 
 export default CommentFeed;
