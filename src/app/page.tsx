@@ -117,7 +117,8 @@ export default function Home() {
           
           const { maze, playerPosition } = prevState;
           let { row, col } = playerPosition;
-          let { newRow, newCol } = {row: row, col: col};
+          let newRow = row;
+          let newCol = col;
 
           if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') newRow--;
           else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') newRow++;
@@ -133,7 +134,7 @@ export default function Home() {
           }
 
           const newPosition = { row: newRow, col: newCol };
-          const isComplete = maze[newPosition.row][newPosition.col] === 'end';
+          const isComplete = prevState.maze[newPosition.row][newPosition.col] === 'end';
 
           return { ...prevState, playerPosition: newPosition, isComplete };
         });
@@ -290,3 +291,5 @@ export default function Home() {
 }
 
   
+
+    
