@@ -11,7 +11,7 @@ import CommandLogDisplay from '@/components/command-log';
 import DevTools from '@/components/dev-tools';
 import { generateMockComment } from '@/lib/mock-data';
 
-const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go'];
+const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries'];
 
 export default function Home() {
   const [keywords, setKeywords] = useState<string[]>(INITIAL_KEYWORDS);
