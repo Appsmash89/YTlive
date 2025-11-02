@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import type { Comment, CommandLog, DisplayMode, TarotCard } from '@/lib/types';
+import type { Comment, CommandLog, DisplayMode, TarotCard, CarState } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import Header from '@/components/layout/header';
@@ -24,7 +24,7 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Youtube, Bug, Settings2, Languages } from 'lucide-react';
 
-const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries'];
+const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries', 'brake'];
 
 export default function Home() {
   const [keywords, setKeywords] = useState<string[]>(INITIAL_KEYWORDS);
@@ -36,6 +36,7 @@ export default function Home() {
   
   const [activeMedia, setActiveMedia] = useState<{url: string; type: string; command: string; authorName: string;} | null>(null);
   const [activeTarotCard, setActiveTarotCard] = useState<TarotCard | null>(null);
+  const [carState, setCarState] = useState<CarState>({ position: 'center', speed: 'stopped' });
   
   const { toast } = useToast();
 
@@ -43,7 +44,10 @@ export default function Home() {
     const lowerCaseComment = commentText.toLowerCase();
     for (const keyword of keywords) {
       if (lowerCaseComment.includes(keyword)) {
-        const command = keyword.replace(/\s+/g, '-');
+        let command = keyword.replace(/\s+/g, '-');
+        // Consolidate movement commands
+        if (['forward', 'go'].includes(keyword)) command = 'forward';
+        if (['stop', 'brake'].includes(keyword)) command = 'stop';
         return { command, feedback: `Command found: ${keyword}` };
       }
     }
@@ -64,11 +68,25 @@ export default function Home() {
     if (displayMode === 'tarot') {
       const tarotResult = getRandomTarotCard();
       setActiveTarotCard(tarotResult.card);
-      // We need to pass the author to the activeMedia to display it
       setActiveMedia({ url: '', type: '', command: 'tarot', authorName: comment.author.name });
       result = { command: 'tarot-draw', feedback: tarotResult.feedback };
-    } else {
-      // FastFood mode
+    } else if (displayMode === 'drive') {
+      result = analyzeComment(comment.text, ['left', 'right', 'forward', 'go', 'stop', 'brake']);
+      if (result.command) {
+        setCarState(prevState => {
+          let { position, speed } = prevState;
+          if (result.command === 'left') position = 'left';
+          else if (result.command === 'right') position = 'right';
+          else if (result.command === 'forward') {
+            speed = 'moving';
+            position = 'center';
+          }
+          else if (result.command === 'stop') speed = 'stopped';
+          return { position, speed };
+        });
+      }
+    }
+    else { // FastFood mode
       result = analyzeComment(comment.text, keywords);
       if (result.command && mediaMap[result.command]) {
         setActiveMedia({
@@ -110,6 +128,7 @@ export default function Home() {
     setDisplayMode(mode);
     setActiveMedia(null);
     setActiveTarotCard(null);
+    setCarState({ position: 'center', speed: 'stopped' });
   }
 
   return (
@@ -189,6 +208,7 @@ export default function Home() {
                 activeMedia={activeMedia} 
                 activeTarotCard={activeTarotCard}
                 displayMode={displayMode}
+                carState={carState}
               />
              </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">

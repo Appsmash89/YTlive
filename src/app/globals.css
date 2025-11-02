@@ -86,3 +86,32 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .perspective {
+    perspective: 100px;
+  }
+}
+
+@keyframes move-road {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+
+.road-animation {
+  animation: move-road 0.5s linear infinite;
+}
+
+@keyframes turn-road {
+  0%, 100% { transform: translateX(0) rotateX(20deg); }
+  25% { transform: translateX(-20px) rotateX(20deg); }
+  75% { transform: translateX(20px) rotateX(20deg); }
+}
+
+.road-turn-animation {
+  animation: turn-road 15s ease-in-out infinite;
+}

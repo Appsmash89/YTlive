@@ -34,4 +34,9 @@ export type TarotCard = {
   description: string;
 };
 
-export type DisplayMode = 'fastfood' | 'tarot';
+export type DisplayMode = 'fastfood' | 'tarot' | 'drive';
+
+export type CarState = {
+  position: 'center' | 'left' | 'right';
+  speed: 'moving' | 'stopped';
+};

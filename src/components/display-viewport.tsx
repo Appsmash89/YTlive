@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clapperboard, VideoOff, Sparkles, Paintbrush, ShieldCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { TarotCard, DisplayMode } from '@/lib/types';
+import type { TarotCard, DisplayMode, CarState } from '@/lib/types';
+import DriveAnimation from './drive-animation';
 
 interface DisplayViewportProps {
   activeMedia: {
@@ -17,25 +18,33 @@ interface DisplayViewportProps {
   } | null;
   activeTarotCard: TarotCard | null;
   displayMode: DisplayMode;
+  carState?: CarState;
 }
 
-const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode }: DisplayViewportProps) => {
+const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState }: DisplayViewportProps) => {
   const isFastFood = displayMode === 'fastfood' && activeMedia;
   const isTarot = displayMode === 'tarot' && activeTarotCard;
-  
-  const content = isFastFood ? {
-    key: activeMedia.url,
-    url: activeMedia.url,
-    alt: activeMedia.command,
-    hint: activeMedia.hint || activeMedia.command,
-    authorName: activeMedia.authorName
-  } : isTarot ? {
-    key: activeTarotCard.name,
-    url: activeTarotCard.imageUrl,
-    alt: activeTarotCard.name,
-    hint: activeTarotCard.imageHint,
-    authorName: activeMedia?.authorName || 'a wanderer'
-  } : null;
+  const isDrive = displayMode === 'drive';
+
+  let content = null;
+  if (isFastFood) {
+    content = {
+      key: activeMedia.url,
+      url: activeMedia.url,
+      alt: activeMedia.command,
+      hint: activeMedia.hint || activeMedia.command,
+      authorName: activeMedia.authorName
+    };
+  } else if (isTarot) {
+    content = {
+      key: activeTarotCard.name,
+      url: activeTarotCard.imageUrl,
+      alt: activeTarotCard.name,
+      hint: activeTarotCard.imageHint,
+      authorName: activeMedia?.authorName || 'a wanderer'
+    };
+  }
+
 
   return (
     <Card className="w-full h-[480px]">
@@ -105,6 +114,8 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode }: DisplayV
                     )}
                 </div>
             </motion.div>
+          ) : isDrive ? (
+              <DriveAnimation carState={carState!} />
           ) : (
             <div className="flex flex-col items-center text-muted-foreground text-center p-8">
               <VideoOff className="h-12 w-12 mb-4" />

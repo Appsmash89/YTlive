@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Send, Utensils, Sparkles } from 'lucide-react';
+import { Send, Utensils, Sparkles, Car } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 import { Label } from '@/components/ui/label';
@@ -35,7 +35,7 @@ const DevTools = ({ onManualComment, keywords, displayMode, onModeChange }: DevT
             <Label>Display Mode</Label>
             <RadioGroup
               defaultValue="fastfood"
-              className="grid grid-cols-2 gap-4"
+              className="grid grid-cols-3 gap-4"
               onValueChange={(value: DisplayMode) => onModeChange(value)}
               value={displayMode}
             >
@@ -57,6 +57,16 @@ const DevTools = ({ onManualComment, keywords, displayMode, onModeChange }: DevT
                 >
                   <Sparkles className="mb-3 h-6 w-6" />
                   Tarot
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="drive" id="drive" className="peer sr-only" />
+                <Label
+                  htmlFor="drive"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                >
+                  <Car className="mb-3 h-6 w-6" />
+                  Drive
                 </Label>
               </div>
             </RadioGroup>
