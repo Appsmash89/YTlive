@@ -36,10 +36,10 @@ const commentTemplates: string[] = [
 
 const getRandomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-export const generateMockComment = () => {
+export const generateMockComment = (text?: string) => {
   return {
     id: crypto.randomUUID(),
     author: getRandomItem(authors),
-    text: getRandomItem(commentTemplates),
+    text: text || getRandomItem(commentTemplates),
   };
 };

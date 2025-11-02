@@ -5,11 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Plus, Sparkles, Loader2, Youtube } from 'lucide-react';
+import { X, Plus, Youtube } from 'lucide-react';
 
 interface ControlPanelProps {
   keywords: string[];
@@ -17,7 +16,6 @@ interface ControlPanelProps {
   onRemoveKeyword: (keyword: string) => void;
   isStreaming: boolean;
   onToggleStreaming: () => void;
-  onSuggestKeywords: () => Promise<string[]>;
 }
 
 const ControlPanel = ({
@@ -26,27 +24,16 @@ const ControlPanel = ({
   onRemoveKeyword,
   isStreaming,
   onToggleStreaming,
-  onSuggestKeywords,
 }: ControlPanelProps) => {
   const [newKeyword, setNewKeyword] = useState('');
-  const [suggestedKeywords, setSuggestedKeywords] = useState<string[]>([]);
-  const [isSuggesting, setIsSuggesting] = useState(false);
 
   const handleAddClick = () => {
     onAddKeyword(newKeyword);
     setNewKeyword('');
   };
 
-  const handleSuggestClick = async () => {
-    setIsSuggesting(true);
-    setSuggestedKeywords([]);
-    const suggestions = await onSuggestKeywords();
-    setSuggestedKeywords(suggestions);
-    setIsSuggesting(false);
-  };
-
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -106,33 +93,6 @@ const ControlPanel = ({
               ))}
             </div>
           </ScrollArea>
-          
-          <Separator />
-
-          <div className="space-y-3">
-             <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium">AI Suggestions</h4>
-                <Button onClick={handleSuggestClick} size="sm" variant="outline" disabled={isSuggesting}>
-                  {isSuggesting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="mr-2 h-4 w-4" />
-                  )}
-                  Suggest
-                </Button>
-              </div>
-            {suggestedKeywords.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {suggestedKeywords.map(suggestion => (
-                  <Badge key={suggestion} className="cursor-pointer bg-primary/10 text-primary hover:bg-primary/20 border-primary/20" onClick={() => { onAddKeyword(suggestion); setSuggestedKeywords(sks => sks.filter(s => s !== suggestion)); }}>
-                    <Plus className="h-3 w-3 mr-1"/>
-                    {suggestion}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-
         </CardContent>
       </Card>
     </div>
