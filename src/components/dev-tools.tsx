@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -11,6 +10,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { DisplayMode } from '@/lib/types';
+import { KEYWORDS_MAP } from '@/lib/constants';
 
 interface DevToolsProps {
   onManualComment: (comment: string) => void;
@@ -29,13 +29,7 @@ const DevTools = ({ onManualComment, keywords, displayMode, onModeChange }: DevT
     }
   };
   
-  const relevantKeywords = {
-    fastfood: keywords.filter(k => !['up', 'down', 'left', 'right', 'forward', 'go', 'stop', 'brake'].includes(k)),
-    drive: ['left', 'right', 'forward', 'go', 'stop', 'brake'],
-    findway: ['up', 'down', 'left', 'right'],
-    tarot: []
-  }[displayMode];
-
+  const relevantKeywords = KEYWORDS_MAP[displayMode] || keywords.filter(k => !Object.values(KEYWORDS_MAP).flat().includes(k));
 
   return (
       <CardContent className="space-y-6">

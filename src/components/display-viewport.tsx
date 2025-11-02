@@ -1,23 +1,16 @@
-
 "use client";
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clapperboard, VideoOff, Sparkles, Paintbrush, ShieldCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { TarotCard, DisplayMode, CarState, MazeState } from '@/lib/types';
+import type { TarotCard, DisplayMode, CarState, MazeState, ActiveMedia } from '@/lib/types';
 import DriveAnimation from './drive-animation';
 import FindWayPuzzle from './find-way-puzzle';
 
 
 interface DisplayViewportProps {
-  activeMedia: {
-    url: string;
-    type: string;
-    command: string;
-    authorName: string;
-    hint?: string;
-  } | null;
+  activeMedia: ActiveMedia | null;
   activeTarotCard: TarotCard | null;
   displayMode: DisplayMode;
   carState?: CarState;
@@ -31,22 +24,17 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
   const isFindWay = displayMode === 'findway';
 
 
-  let content = null;
+  let content: ActiveMedia | null = null;
   if (isFastFood) {
-    content = {
-      key: activeMedia.url,
-      url: activeMedia.url,
-      alt: activeMedia.command,
-      hint: activeMedia.hint || activeMedia.command,
-      authorName: activeMedia.authorName
-    };
+    content = activeMedia;
   } else if (isTarot) {
     content = {
       key: activeTarotCard.name,
       url: activeTarotCard.imageUrl,
-      alt: activeTarotCard.name,
+      command: activeTarotCard.name,
       hint: activeTarotCard.imageHint,
-      authorName: activeMedia?.authorName || 'a wanderer'
+      authorName: activeMedia?.authorName || 'a wanderer',
+      type: 'image'
     };
   }
 
@@ -61,7 +49,7 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
         <AnimatePresence mode="wait">
           {content ? (
             <motion.div
-              key={content.key}
+              key={content.url}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -74,7 +62,7 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
                     )}
                     <Image
                         src={content.url}
-                        alt={content.alt}
+                        alt={content.command}
                         fill
                         className="object-cover"
                         data-ai-hint={content.hint}

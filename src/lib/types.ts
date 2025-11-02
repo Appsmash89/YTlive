@@ -52,3 +52,11 @@ export type MazeState = {
   playerPosition: Position;
   isComplete: boolean;
 };
+
+export type ActiveMedia = {
+  url: string;
+  type: string;
+  command: string;
+  authorName: string;
+  hint?: string;
+};
