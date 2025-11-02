@@ -8,17 +8,10 @@ const youtube = google.youtube('v3');
 
 // This function finds the liveChatId for a given video ID.
 export async function getLiveChatId(videoId: string): Promise<string | null> {
-  // If videoId is a mock, return a mock chat ID immediately.
-  if (videoId === 'mock-video-id') {
-    return 'mock-chat-id-for-' + videoId;
-  }
-  
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    console.error('GOOGLE_API_KEY is not set. Using mock ID as fallback.');
-    // To prevent crashes when the key is missing, we can pretend it's a mock video.
-    // This allows the UI to function without a real key.
-    return 'mock-chat-id-for-mock-video-id';
+    console.error('GOOGLE_API_KEY is not set.');
+    throw new Error('GOOGLE_API_KEY is not configured on the server.');
   }
 
   try {
@@ -32,16 +25,12 @@ export async function getLiveChatId(videoId: string): Promise<string | null> {
     if (video && video.liveStreamingDetails && video.liveStreamingDetails.activeLiveChatId) {
       return video.liveStreamingDetails.activeLiveChatId;
     } else {
-      // The video might not be a live stream or might have chat disabled.
-      // We can return a mock ID to prevent the app from crashing.
-      console.warn(`Could not find live chat for video ID: ${videoId}. Is it a live stream?`);
-      return `mock-chat-id-for-${videoId}`;
+      console.warn(`Could not find live chat for video ID: ${videoId}. Is it a live stream with chat enabled?`);
+      return null;
     }
   } catch (error) {
     console.error("Error fetching live chat ID:", error);
-    // Throwing an error here can crash the app if not handled well.
-    // Let's return a mock ID to ensure the UI remains interactive.
-    return `mock-chat-id-for-${videoId}`;
+    throw new Error("Could not retrieve live chat details from YouTube. Check the video ID.");
   }
 }
 
@@ -58,29 +47,10 @@ export async function fetchLiveChatMessages({
   nextPageToken: string | undefined;
   pollingIntervalMillis: number | undefined;
 }> {
-
-  // If liveChatId is a mock, return mock comments
-  if (liveChatId.startsWith('mock-chat-id')) {
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-    const mockComments = [
-      generateMockComment(),
-      generateMockComment(),
-    ].map(c => ({...c, text: c.text.toLowerCase()})); // Use mock data generator
-    
-    return {
-      comments: mockComments,
-      nextPageToken: pageToken,
-      pollingIntervalMillis: 5000,
-    };
-  }
-
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    // This should ideally not be reached because getLiveChatId would have returned a mock id.
-    // But as a safeguard:
     throw new Error('GOOGLE_API_KEY is not set');
   }
-
 
   try {
     const response = await youtube.liveChatMessages.list({
@@ -115,3 +85,4 @@ export async function fetchLiveChatMessages({
      }
   }
 }
+
