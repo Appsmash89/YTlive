@@ -118,7 +118,7 @@ export default function Home() {
       <main className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
           <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
-             <Accordion type="multiple" defaultValue={['stream-controls', 'keyword-recognition', 'dev-tools']} className="w-full space-y-6">
+             <Accordion type="multiple" className="w-full space-y-6">
                <AccordionItem value="stream-controls" className="border-none">
                   <Card>
                     <AccordionTrigger className="p-6 hover:no-underline">
