@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import type { FirebaseApp } from 'firebase/app';
-import { getAuth, type Auth } from 'firebase/auth';
-import { getFirestore, type Firestore } from 'firebase/firestore';
+import type { Auth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
 
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
@@ -25,10 +25,8 @@ export function FirebaseClientProvider({
   } | null>(null);
 
   useEffect(() => {
-    const { app } = initializeFirebase();
-    const auth = getAuth(app);
-    const firestore = getFirestore(app);
-
+    // initializeFirebase now returns all necessary instances
+    const { app, auth, firestore } = initializeFirebase();
     setFirebase({ app, auth, firestore });
   }, []);
 
