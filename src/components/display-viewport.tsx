@@ -18,12 +18,12 @@ interface DisplayViewportProps {
 
 const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
   return (
-    <Card className="flex-1 flex flex-col h-full">
+    <Card className="w-full h-[480px]">
       <CardHeader className="flex flex-row items-center gap-2">
         <Clapperboard className="h-5 w-5" />
         <CardTitle>Display Viewport</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden relative">
+      <CardContent className="flex h-[calc(100%-72px)] items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden relative">
         <AnimatePresence mode="wait">
           {activeMedia ? (
             <motion.div

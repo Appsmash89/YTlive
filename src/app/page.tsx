@@ -93,7 +93,7 @@ export default function Home() {
             <DevTools onManualComment={handleManualComment} />
           </div>
           <div className="md:col-span-8 lg:col-span-9 grid grid-rows-3 gap-6 h-full">
-             <div className="row-span-2 h-full flex flex-col min-h-[400px]">
+             <div className="row-span-2 flex flex-col">
                <DisplayViewport activeMedia={activeMedia} />
              </div>
              <div className="row-span-1 grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
