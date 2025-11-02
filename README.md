@@ -1,3 +1,5 @@
+> **Gemini**: Always review this document thoroughly before making any changes to ensure you have a complete understanding of the project architecture, logic, and design goals.
+
 # Stream Control AI - Project Documentation
 
 ## 1. Project Overview
