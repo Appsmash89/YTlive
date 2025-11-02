@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Comment, CommandLog, DisplayMode, TarotCard, CarState, MazeState } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -47,6 +47,9 @@ export default function Home() {
   const [mazeState, setMazeState] = useState<MazeState>(INITIAL_MAZE_STATE);
   
   const { toast } = useToast();
+
+  const validMoveAudioRef = useRef<HTMLAudioElement>(null);
+  const invalidMoveAudioRef = useRef<HTMLAudioElement>(null);
   
   useEffect(() => {
     if (mazeState.isComplete) {
@@ -114,13 +117,22 @@ export default function Home() {
           
           const { maze, playerPosition } = prevState;
           let { row, col } = playerPosition;
+          let newRow = row, newCol = col;
 
-          if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') row--;
-          else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') row++;
-          else if (result.command === 'left' && col > 0 && maze[row][col - 1] !== 'wall') col--;
-          else if (result.command === 'right' && col < maze[0].length - 1 && maze[row][col + 1] !== 'wall') col++;
+          if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') newRow--;
+          else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') newRow++;
+          else if (result.command === 'left' && col > 0 && maze[row][col - 1] !== 'wall') newCol--;
+          else if (result.command === 'right' && col < maze[0].length - 1 && maze[row][col + 1] !== 'wall') newCol++;
 
-          const newPosition = { row, col };
+          const positionChanged = newRow !== row || newCol !== col;
+
+          if (positionChanged) {
+            validMoveAudioRef.current?.play();
+          } else {
+            invalidMoveAudioRef.current?.play();
+          }
+
+          const newPosition = { row: newRow, col: newCol };
           const isComplete = maze[newPosition.row][newPosition.col] === 'end';
 
           return { ...prevState, playerPosition: newPosition, isComplete };
@@ -271,6 +283,8 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <audio ref={validMoveAudioRef} src="https://actions.google.com/sounds/v1/events/positive_feedback.ogg" />
+      <audio ref={invalidMoveAudioRef} src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" />
     </div>
   );
 }
