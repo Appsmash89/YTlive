@@ -284,7 +284,7 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <audio ref={validMoveAudioRef} src="https://actions.google.com/sounds/v1/events/positive_feedback.ogg" />
+      <audio ref={validMoveAudioRef} src="https://github.com/goldfire/howler.js/raw/master/examples/player/sounds/sprite.mp3" />
       <audio ref={invalidMoveAudioRef} src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" />
     </div>
   );
