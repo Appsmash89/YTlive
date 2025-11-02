@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -10,21 +11,13 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, Plus, Youtube } from 'lucide-react';
 
-interface ControlPanelProps {
+interface KeywordEditorProps {
   keywords: string[];
   onAddKeyword: (keyword: string) => void;
   onRemoveKeyword: (keyword: string) => void;
-  isStreaming: boolean;
-  onToggleStreaming: () => void;
 }
 
-const ControlPanel = ({
-  keywords,
-  onAddKeyword,
-  onRemoveKeyword,
-  isStreaming,
-  onToggleStreaming,
-}: ControlPanelProps) => {
+const KeywordEditor = ({ keywords, onAddKeyword, onRemoveKeyword }: KeywordEditorProps) => {
   const [newKeyword, setNewKeyword] = useState('');
 
   const handleAddClick = () => {
@@ -33,7 +26,45 @@ const ControlPanel = ({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <CardContent className="flex-1 flex flex-col gap-4">
+      <div className="flex gap-2">
+        <Input
+          placeholder="Add a new keyword..."
+          value={newKeyword}
+          onChange={(e) => setNewKeyword(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleAddClick()}
+        />
+        <Button onClick={handleAddClick} size="icon" aria-label="Add keyword">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      <ScrollArea className="flex-grow h-32">
+        <div className="flex flex-wrap gap-2">
+          {keywords.map(keyword => (
+            <Badge key={keyword} variant="secondary" className="text-sm font-medium">
+              {keyword}
+              <button onClick={() => onRemoveKeyword(keyword)} className="ml-2 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      </ScrollArea>
+    </CardContent>
+  );
+};
+
+
+interface ControlPanelProps {
+  isStreaming: boolean;
+  onToggleStreaming: () => void;
+}
+
+const ControlPanel = ({
+  isStreaming,
+  onToggleStreaming,
+}: ControlPanelProps) => {
+  return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -63,40 +94,9 @@ const ControlPanel = ({
           </div>
         </CardContent>
       </Card>
-      
-      <Card className="flex-1 flex flex-col">
-        <CardHeader>
-          <CardTitle>Keyword Recognition</CardTitle>
-          <CardDescription>Add or remove keywords for command recognition.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1 flex flex-col gap-4">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Add a new keyword..."
-              value={newKeyword}
-              onChange={(e) => setNewKeyword(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddClick()}
-            />
-            <Button onClick={handleAddClick} size="icon" aria-label="Add keyword">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <ScrollArea className="flex-grow h-32">
-            <div className="flex flex-wrap gap-2">
-              {keywords.map(keyword => (
-                <Badge key={keyword} variant="secondary" className="text-sm font-medium">
-                  {keyword}
-                  <button onClick={() => onRemoveKeyword(keyword)} className="ml-2 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2">
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
   );
 };
+
+ControlPanel.KeywordEditor = KeywordEditor;
 
 export default ControlPanel;

@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Send, Bug } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -25,16 +25,6 @@ const DevTools = ({ onManualComment, keywords }: DevToolsProps) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bug className="h-5 w-5" />
-          Dev Tools
-        </CardTitle>
-        <CardDescription>
-          Manually send comments to the feed for testing purposes.
-        </CardDescription>
-      </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Textarea
@@ -71,7 +61,6 @@ const DevTools = ({ onManualComment, keywords }: DevToolsProps) => {
             </ScrollArea>
         </div>
       </CardContent>
-    </Card>
   );
 };
 

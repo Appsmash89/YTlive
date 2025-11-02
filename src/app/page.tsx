@@ -14,6 +14,15 @@ import { generateMockComment } from '@/lib/mock-data';
 import DisplayViewport from '@/components/display-viewport';
 import { mediaMap } from '@/lib/media';
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Youtube, Bug } from 'lucide-react';
+
 const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries'];
 
 export default function Home() {
@@ -84,13 +93,44 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
           <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
             <ControlPanel
-              keywords={keywords}
-              onAddKeyword={handleAddKeyword}
-              onRemoveKeyword={handleRemoveKeyword}
               isStreaming={isStreaming}
               onToggleStreaming={() => setIsStreaming(prev => !prev)}
             />
-            <DevTools onManualComment={handleManualComment} keywords={keywords} />
+             <Accordion type="multiple" defaultValue={['item-1', 'item-2']} className="w-full space-y-6">
+              <AccordionItem value="item-1" className="border-none">
+                <Card>
+                  <AccordionTrigger className="p-6 hover:no-underline">
+                      <CardHeader className="p-0">
+                        <CardTitle>Keyword Recognition</CardTitle>
+                        <CardDescription>Add or remove keywords for command recognition.</CardDescription>
+                      </CardHeader>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                      <ControlPanel.KeywordEditor
+                        keywords={keywords}
+                        onAddKeyword={handleAddKeyword}
+                        onRemoveKeyword={handleRemoveKeyword}
+                      />
+                  </AccordionContent>
+                </Card>
+              </AccordionItem>
+              <AccordionItem value="item-2" className="border-none">
+                <Card>
+                    <AccordionTrigger className="p-6 hover:no-underline">
+                        <CardHeader className="p-0">
+                            <CardTitle className="flex items-center gap-2">
+                                <Bug className="h-5 w-5" />
+                                Dev Tools
+                            </CardTitle>
+                             <CardDescription>Manually send comments to the feed for testing purposes.</CardDescription>
+                        </CardHeader>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        <DevTools onManualComment={handleManualComment} keywords={keywords} />
+                    </AccordionContent>
+                </Card>
+              </AccordionItem>
+            </Accordion>
           </div>
           <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
              <div>
