@@ -23,7 +23,7 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
         <Clapperboard className="h-5 w-5" />
         <CardTitle>Display Viewport</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden">
+      <CardContent className="flex-1 flex items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden relative">
         <AnimatePresence mode="wait">
           {activeMedia ? (
             <motion.div
@@ -32,19 +32,21 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="relative w-full h-full"
+              className="absolute inset-0"
             >
-              <Image
-                src={activeMedia.url}
-                alt={activeMedia.command}
-                fill
-                className="object-contain"
-                data-ai-hint={activeMedia.hint || activeMedia.command}
-              />
-              <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-lg">
-                <p className="text-sm font-semibold">
-                  Requested by: <span className="font-bold">{activeMedia.authorName}</span>
-                </p>
+              <div className="relative w-full h-full">
+                <Image
+                  src={activeMedia.url}
+                  alt={activeMedia.command}
+                  fill
+                  className="object-contain"
+                  data-ai-hint={activeMedia.hint || activeMedia.command}
+                />
+                <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-lg">
+                  <p className="text-sm font-semibold">
+                    Requested by: <span className="font-bold">{activeMedia.authorName}</span>
+                  </p>
+                </div>
               </div>
             </motion.div>
           ) : (
