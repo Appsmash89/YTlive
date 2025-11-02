@@ -92,11 +92,11 @@ export default function Home() {
             />
             <DevTools onManualComment={handleManualComment} keywords={keywords} />
           </div>
-          <div className="md:col-span-8 lg:col-span-9 grid grid-rows-3 gap-6 h-full">
-             <div className="row-span-2">
+          <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
+             <div>
                <DisplayViewport activeMedia={activeMedia} />
              </div>
-             <div className="row-span-1 grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
                 <div className="h-full flex flex-col">
                     <CommentFeed
                       onNewComment={handleNewComment}
