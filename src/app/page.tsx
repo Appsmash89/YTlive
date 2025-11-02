@@ -117,7 +117,7 @@ export default function Home() {
           
           const { maze, playerPosition } = prevState;
           let { row, col } = playerPosition;
-          let newRow = row, newCol = col;
+          let { newRow, newCol } = {row: row, col: col};
 
           if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') newRow--;
           else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') newRow++;
@@ -284,7 +284,9 @@ export default function Home() {
         </div>
       </main>
       <audio ref={validMoveAudioRef} src="https://actions.google.com/sounds/v1/events/positive_feedback.ogg" />
-      <audio ref={invalidMoveAudioRef} src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" />
+      <audio ref={invalidMoveAudioRef} src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" />
     </div>
   );
 }
+
+  
