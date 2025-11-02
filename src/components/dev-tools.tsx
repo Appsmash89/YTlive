@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -5,12 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Send, Bug } from 'lucide-react';
+import { Badge } from './ui/badge';
+import { ScrollArea } from './ui/scroll-area';
 
 interface DevToolsProps {
   onManualComment: (comment: string) => void;
+  keywords: string[];
 }
 
-const DevTools = ({ onManualComment }: DevToolsProps) => {
+const DevTools = ({ onManualComment, keywords }: DevToolsProps) => {
   const [commentText, setCommentText] = useState('');
 
   const handleSendComment = () => {
@@ -31,7 +35,7 @@ const DevTools = ({ onManualComment }: DevToolsProps) => {
           Manually send comments to the feed for testing purposes.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="space-y-2">
           <Textarea
             placeholder="Type a comment..."
@@ -48,6 +52,23 @@ const DevTools = ({ onManualComment }: DevToolsProps) => {
             <Send className="mr-2" />
             Send Comment
           </Button>
+        </div>
+        <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Click to send a keyword comment:</p>
+            <ScrollArea className="h-24">
+                <div className="flex flex-wrap gap-2">
+                    {keywords.map((keyword) => (
+                        <Badge 
+                            key={keyword} 
+                            variant="secondary" 
+                            className="cursor-pointer hover:bg-primary/20"
+                            onClick={() => onManualComment(keyword)}
+                        >
+                            {keyword}
+                        </Badge>
+                    ))}
+                </div>
+            </ScrollArea>
         </div>
       </CardContent>
     </Card>

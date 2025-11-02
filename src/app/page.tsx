@@ -90,7 +90,7 @@ export default function Home() {
               isStreaming={isStreaming}
               onToggleStreaming={() => setIsStreaming(prev => !prev)}
             />
-            <DevTools onManualComment={handleManualComment} />
+            <DevTools onManualComment={handleManualComment} keywords={keywords} />
           </div>
           <div className="md:col-span-8 lg:col-span-9 grid grid-rows-3 gap-6 h-full">
              <div className="row-span-2">
