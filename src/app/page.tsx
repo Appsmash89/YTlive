@@ -77,11 +77,11 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground font-sans">
+    <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
       <Header />
-      <main className="flex-1 overflow-hidden">
-        <div className="h-full grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
-          <div className="md:col-span-4 lg:col-span-3 h-full overflow-y-auto rounded-lg flex flex-col gap-6">
+      <main className="flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
+          <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
             <ControlPanel
               keywords={keywords}
               onAddKeyword={handleAddKeyword}
@@ -92,10 +92,10 @@ export default function Home() {
             <DevTools onManualComment={handleManualComment} />
           </div>
           <div className="md:col-span-8 lg:col-span-9 grid grid-rows-3 gap-6 h-full">
-             <div className="row-span-2 h-full flex flex-col">
+             <div className="row-span-2 h-full flex flex-col min-h-[400px]">
                <DisplayViewport activeMedia={activeMedia} />
              </div>
-             <div className="row-span-1 grid grid-cols-2 gap-6 h-full">
+             <div className="row-span-1 grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
                 <div className="h-full flex flex-col">
                     <CommentFeed
                       onNewComment={handleNewComment}
