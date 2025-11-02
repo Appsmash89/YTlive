@@ -10,7 +10,7 @@ export type Comment = {
 };
 
 export type CommandLog = {
-  id: string;
+  id:string;
   comment: Comment;
   command: string | undefined;
   feedback: string | undefined;
@@ -29,6 +29,8 @@ export type TarotCard = {
     light: string[];
     shadow: string[];
   };
+  favorableColor: string;
+  obstacleAdvice: string;
   description: string;
 };
 

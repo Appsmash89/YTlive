@@ -12,6 +12,8 @@
         "light": ["You are a free spirit", "You have faith in the future", "You are living in the moment", "You are starting a new journey"],
         "shadow": ["You are being naive or foolish", "You are taking unnecessary risks", "You are failing to plan ahead", "You lack a sense of purpose"]
       },
+      "favorableColor": "Bright Yellow",
+      "obstacleAdvice": "Embrace the unknown; your biggest obstacle is the fear of starting.",
       "description": "The Fool represents new beginnings, having faith in the future, being inexperienced, not knowing what to expect, having beginner's luck, improvisation and believing in the universe."
     },
     {
@@ -26,6 +28,8 @@
         "light": ["You are manifesting your desires", "You are using your skills and resources", "You are taking action", "You are confident"],
         "shadow": ["You may be manipulative", "You are being deceptive", "You are misusing your power", "You have untapped potential"]
       },
+      "favorableColor": "Silver",
+      "obstacleAdvice": "Focus your willpower on a single goal; scattered energy is your main hurdle.",
       "description": "The Magician is the card of manifestation, willpower, and inspired action. It suggests that you have all the tools and resources you need to achieve your goals."
     },
     {
@@ -40,6 +44,8 @@
         "light": ["You trust your intuition", "You are accessing your subconscious", "You are uncovering secrets", "You have spiritual insight"],
         "shadow": ["You are ignoring your intuition", "You are keeping secrets", "You are out of touch with your inner self", "You are feeling confused"]
       },
+      "favorableColor": "Indigo",
+      "obstacleAdvice": "Trust your gut feelings; ignoring your intuition is the biggest barrier right now.",
       "description": "The High Priestess signifies intuition, mystery, and the subconscious mind. She encourages you to trust your inner voice and look beyond the obvious."
     },
     {
@@ -54,6 +60,8 @@
         "light": ["You seem to embrace your feminine energy", "You are nurturing yourself and others", "You are connecting with nature", "You are creating abundance"],
         "shadow": ["You may be feeling creative blocks", "You are dependent on others", "You are smothering someone", "You are neglecting self-care"]
       },
+      "favorableColor": "Emerald Green",
+      "obstacleAdvice": "Nurture your creative ideas to fruition; perfectionism is stalling your progress.",
       "description": "The Empress represents femininity, nurturing, fertility, and abundance. She is the embodiment of creation and connection to the natural world."
     },
     {
@@ -68,6 +76,8 @@
         "light": ["You are establishing order and structure", "You are exercising your authority", "You are disciplined", "You are taking on a leadership role"],
         "shadow": ["You are being controlling or rigid", "You are abusing your power", "You are lacking discipline", "You have issues with authority"]
       },
+      "favorableColor": "Crimson Red",
+      "obstacleAdvice": "Create a clear plan and stick to it; lack of structure is your primary obstacle.",
       "description": "The Emperor symbolizes authority, structure, and control. He brings order to chaos and represents a powerful, fatherly figure who provides stability and security."
     }
   ]

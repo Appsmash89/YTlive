@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clapperboard, VideoOff, Sparkles } from 'lucide-react';
+import { Clapperboard, VideoOff, Sparkles, Paintbrush, ShieldCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { TarotCard, DisplayMode } from '@/lib/types';
 
@@ -72,17 +72,35 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode }: DisplayV
                     </div>
 
                     {isTarot && activeTarotCard && (
-                         <div className="absolute bottom-12 left-0 right-0 p-6 text-white z-20">
-                            <h3 className="text-3xl font-bold tracking-tight">{activeTarotCard.name}</h3>
-                            <p className="text-sm uppercase font-medium text-amber-300">{activeTarotCard.arcana} - {activeTarotCard.suit}</p>
-                            <ul className="mt-4 space-y-1 text-base">
-                                {activeTarotCard.meanings.light.slice(0, 2).map((meaning, i) => (
-                                    <li key={i} className="flex items-start gap-2">
-                                        <Sparkles className="h-4 w-4 mt-1 shrink-0 text-amber-300" />
-                                        <span>{meaning}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                         <div className="absolute bottom-12 left-0 right-0 p-6 text-white z-20 grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                            <div>
+                                <h3 className="text-3xl font-bold tracking-tight">{activeTarotCard.name}</h3>
+                                <p className="text-sm uppercase font-medium text-amber-300">{activeTarotCard.arcana} - {activeTarotCard.suit}</p>
+                                <ul className="mt-4 space-y-1 text-base">
+                                    {activeTarotCard.meanings.light.slice(0, 2).map((meaning, i) => (
+                                        <li key={i} className="flex items-start gap-2">
+                                            <Sparkles className="h-4 w-4 mt-1 shrink-0 text-amber-300" />
+                                            <span>{meaning}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="mt-6 md:mt-0 md:pt-12 space-y-3 text-right">
+                                <div className="flex justify-end items-start gap-2">
+                                    <div className="text-right">
+                                        <p className="font-semibold">Favorable Color</p>
+                                        <p className="text-sm text-muted-foreground">{activeTarotCard.favorableColor}</p>
+                                    </div>
+                                    <Paintbrush className="h-5 w-5 mt-0.5 shrink-0" />
+                                </div>
+                                <div className="flex justify-end items-start gap-2">
+                                   <div className="text-right">
+                                      <p className="font-semibold">To Overcome Obstacles</p>
+                                      <p className="text-sm text-muted-foreground">{activeTarotCard.obstacleAdvice}</p>
+                                   </div>
+                                    <ShieldCheck className="h-5 w-5 mt-0.5 shrink-0" />
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
