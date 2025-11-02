@@ -11,22 +11,27 @@ interface FindWayPuzzleProps {
 }
 
 const FindWayPuzzle = ({ mazeState }: FindWayPuzzleProps) => {
-  const { maze, playerPosition, isComplete } = mazeState;
+  const { maze, playerPosition } = mazeState;
+  const rows = maze.length;
+  const cols = maze[0].length;
 
   return (
     <div className="w-full h-full bg-gray-800 flex items-center justify-center p-4">
       <div
-        className="grid bg-gray-900 border-2 border-accent/50 rounded-lg shadow-lg"
+        className="relative bg-gray-900 border-2 border-accent/50 rounded-lg shadow-lg"
         style={{
-          gridTemplateRows: `repeat(${maze.length}, 1fr)`,
-          gridTemplateColumns: `repeat(${maze[0].length}, 1fr)`,
-          aspectRatio: `${maze[0].length} / ${maze.length}`
+          aspectRatio: `${cols} / ${rows}`
         }}
       >
-        <AnimatePresence>
+        <div 
+          className="grid h-full w-full"
+          style={{
+            gridTemplateRows: `repeat(${rows}, 1fr)`,
+            gridTemplateColumns: `repeat(${cols}, 1fr)`,
+          }}
+        >
           {maze.map((row, rowIndex) =>
             row.map((cell, colIndex) => {
-              const isPlayerPosition = playerPosition.row === rowIndex && playerPosition.col === colIndex;
               let cellContent = null;
               let cellClass = 'flex items-center justify-center';
 
@@ -45,23 +50,35 @@ const FindWayPuzzle = ({ mazeState }: FindWayPuzzleProps) => {
               return (
                 <div key={`${rowIndex}-${colIndex}`} className={cellClass}>
                   {cellContent}
-                   {isPlayerPosition && (
-                    <motion.div
-                      layoutId="player-marble"
-                      className="w-3/4 h-3/4 rounded-full bg-blue-400 shadow-lg"
-                      style={{
-                        backgroundImage: 'radial-gradient(circle, #a7d9f7 0%, #3a9de0 100%)',
-                        border: '2px solid #a7d9f7'
-                      }}
-                      initial={false}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                    />
-                  )}
                 </div>
               );
             })
           )}
-        </AnimatePresence>
+        </div>
+
+        <motion.div
+          className="absolute top-0 left-0"
+          style={{
+            width: `${100 / cols}%`,
+            height: `${100 / rows}%`,
+          }}
+          initial={false}
+          animate={{
+            x: `${playerPosition.col * 100}%`,
+            y: `${playerPosition.row * 100}%`,
+          }}
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        >
+          <div className="w-full h-full flex items-center justify-center">
+            <div
+              className="w-3/4 h-3/4 rounded-full bg-blue-400 shadow-lg"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #a7d9f7 0%, #3a9de0 100%)',
+                border: '2px solid #a7d9f7'
+              }}
+            />
+          </div>
+        </motion.div>
       </div>
     </div>
   );
