@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import type { Comment, CommandLog } from '@/lib/types';
+import type { Comment, CommandLog, DisplayMode, TarotCard } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import Header from '@/components/layout/header';
@@ -13,6 +13,7 @@ import DevTools from '@/components/dev-tools';
 import { generateMockComment } from '@/lib/mock-data';
 import DisplayViewport from '@/components/display-viewport';
 import { mediaMap } from '@/lib/media';
+import { tarotCards } from '@/lib/tarot-cards';
 
 import {
   Accordion,
@@ -31,7 +32,11 @@ export default function Home() {
   const [commandHistory, setCommandHistory] = useState<CommandLog[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>('fastfood');
+  
   const [activeMedia, setActiveMedia] = useState<{url: string; type: string; command: string; authorName: string;} | null>(null);
+  const [activeTarotCard, setActiveTarotCard] = useState<TarotCard | null>(null);
+  
   const { toast } = useToast();
 
   const analyzeComment = useCallback((commentText: string, keywords: string[]): { command: string | undefined, feedback: string | undefined } => {
@@ -44,19 +49,34 @@ export default function Home() {
     }
     return { command: undefined, feedback: 'No command detected' };
   }, []);
+  
+  const getRandomTarotCard = useCallback((): { card: TarotCard, feedback: string } => {
+    const card = tarotCards[Math.floor(Math.random() * tarotCards.length)];
+    return { card, feedback: `Drew the ${card.name} card` };
+  }, []);
 
   const handleNewComment = useCallback(async (comment: Comment) => {
     setIsProcessing(true);
     setComments(prev => [comment, ...prev]);
 
-    const result = analyzeComment(comment.text, keywords);
-
-    if (result.command && mediaMap[result.command]) {
-      setActiveMedia({
-        ...mediaMap[result.command],
-        command: result.command,
-        authorName: comment.author.name,
-      });
+    let result: { command: string | undefined, feedback: string | undefined };
+    
+    if (displayMode === 'tarot') {
+      const tarotResult = getRandomTarotCard();
+      setActiveTarotCard(tarotResult.card);
+      // We need to pass the author to the activeMedia to display it
+      setActiveMedia({ url: '', type: '', command: 'tarot', authorName: comment.author.name });
+      result = { command: 'tarot-draw', feedback: tarotResult.feedback };
+    } else {
+      // FastFood mode
+      result = analyzeComment(comment.text, keywords);
+      if (result.command && mediaMap[result.command]) {
+        setActiveMedia({
+          ...mediaMap[result.command],
+          command: result.command,
+          authorName: comment.author.name,
+        });
+      }
     }
 
     const newLog: CommandLog = {
@@ -68,7 +88,7 @@ export default function Home() {
     };
     setCommandHistory(prev => [newLog, ...prev]);
     setIsProcessing(false);
-  }, [keywords, analyzeComment]);
+  }, [keywords, analyzeComment, displayMode, getRandomTarotCard]);
 
   const handleAddKeyword = (keyword: string) => {
     const newKeyword = keyword.trim().toLowerCase();
@@ -84,6 +104,12 @@ export default function Home() {
   const handleManualComment = (commentText: string) => {
     const comment = generateMockComment(commentText);
     handleNewComment(comment);
+  }
+  
+  const handleModeChange = (mode: DisplayMode) => {
+    setDisplayMode(mode);
+    setActiveMedia(null);
+    setActiveTarotCard(null);
   }
 
   return (
@@ -142,11 +168,16 @@ export default function Home() {
                                 <Bug className="h-5 w-5" />
                                 Dev Tools
                             </CardTitle>
-                             <CardDescription>Manually send comments for testing purposes.</CardDescription>
+                             <CardDescription>Manually send comments & change modes.</CardDescription>
                         </CardHeader>
                     </AccordionTrigger>
                     <AccordionContent>
-                        <DevTools onManualComment={handleManualComment} keywords={keywords} />
+                        <DevTools 
+                          onManualComment={handleManualComment} 
+                          keywords={keywords}
+                          displayMode={displayMode}
+                          onModeChange={handleModeChange}
+                        />
                     </AccordionContent>
                 </Card>
               </AccordionItem>
@@ -154,7 +185,11 @@ export default function Home() {
           </div>
           <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
              <div>
-               <DisplayViewport activeMedia={activeMedia} />
+               <DisplayViewport 
+                activeMedia={activeMedia} 
+                activeTarotCard={activeTarotCard}
+                displayMode={displayMode}
+              />
              </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
                 <div className="flex flex-col">

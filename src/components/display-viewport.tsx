@@ -3,8 +3,9 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clapperboard, VideoOff } from 'lucide-react';
+import { Clapperboard, VideoOff, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { TarotCard, DisplayMode } from '@/lib/types';
 
 interface DisplayViewportProps {
   activeMedia: {
@@ -14,9 +15,28 @@ interface DisplayViewportProps {
     authorName: string;
     hint?: string;
   } | null;
+  activeTarotCard: TarotCard | null;
+  displayMode: DisplayMode;
 }
 
-const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
+const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode }: DisplayViewportProps) => {
+  const isFastFood = displayMode === 'fastfood' && activeMedia;
+  const isTarot = displayMode === 'tarot' && activeTarotCard;
+  
+  const content = isFastFood ? {
+    key: activeMedia.url,
+    url: activeMedia.url,
+    alt: activeMedia.command,
+    hint: activeMedia.hint || activeMedia.command,
+    authorName: activeMedia.authorName
+  } : isTarot ? {
+    key: activeTarotCard.name,
+    url: activeTarotCard.imageUrl,
+    alt: activeTarotCard.name,
+    hint: activeTarotCard.imageHint,
+    authorName: activeMedia?.authorName || 'a wanderer'
+  } : null;
+
   return (
     <Card className="w-full h-[480px]">
       <CardHeader className="flex flex-row items-center gap-2">
@@ -25,29 +45,47 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
       </CardHeader>
       <CardContent className="flex h-[calc(100%-72px)] items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden relative">
         <AnimatePresence mode="wait">
-          {activeMedia ? (
+          {content ? (
             <motion.div
-              key={activeMedia.url}
+              key={content.key}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="absolute inset-0"
             >
-              <div className="relative w-full h-full">
-                <Image
-                  src={activeMedia.url}
-                  alt={activeMedia.command}
-                  fill
-                  className="object-cover"
-                  data-ai-hint={activeMedia.hint || activeMedia.command}
-                />
-                <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-lg">
-                  <p className="text-sm font-semibold">
-                    Requested by: <span className="font-bold">{activeMedia.authorName}</span>
-                  </p>
+                <div className="relative w-full h-full">
+                    {isTarot && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent z-10" />
+                    )}
+                    <Image
+                        src={content.url}
+                        alt={content.alt}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={content.hint}
+                    />
+                     <div className="absolute bottom-4 left-4 z-20 bg-black/50 text-white px-3 py-1.5 rounded-lg">
+                        <p className="text-sm font-semibold">
+                            Requested by: <span className="font-bold">{content.authorName}</span>
+                        </p>
+                    </div>
+
+                    {isTarot && activeTarotCard && (
+                         <div className="absolute bottom-12 left-0 right-0 p-6 text-white z-20">
+                            <h3 className="text-3xl font-bold tracking-tight">{activeTarotCard.name}</h3>
+                            <p className="text-sm uppercase font-medium text-amber-300">{activeTarotCard.arcana} - {activeTarotCard.suit}</p>
+                            <ul className="mt-4 space-y-1 text-base">
+                                {activeTarotCard.meanings.light.slice(0, 2).map((meaning, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                        <Sparkles className="h-4 w-4 mt-1 shrink-0 text-amber-300" />
+                                        <span>{meaning}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
-              </div>
             </motion.div>
           ) : (
             <div className="flex flex-col items-center text-muted-foreground text-center p-8">

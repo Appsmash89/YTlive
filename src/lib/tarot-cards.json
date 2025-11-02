@@ -1,0 +1,74 @@
+{
+  "cards": [
+    {
+      "name": "The Fool",
+      "number": "0",
+      "arcana": "Major Arcana",
+      "suit": "Trump",
+      "imageUrl": "https://images.unsplash.com/photo-1591781534033-95c589602066?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0aGUlMjBmb29sJTIwdGFyb3R8ZW58MHx8fHwxNzYyMDkwNjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jester cliff",
+      "keywords": ["beginnings", "innocence", "spontaneity", "free spirit"],
+      "meanings": {
+        "light": ["Being a free spirit", "Having faith", "Living in the moment", "Starting a new journey"],
+        "shadow": ["Being naive or foolish", "Taking unnecessary risks", "Failing to plan ahead", "Lacking a sense of purpose"]
+      },
+      "description": "The Fool represents new beginnings, having faith in the future, being inexperienced, not knowing what to expect, having beginner's luck, improvisation and believing in the universe."
+    },
+    {
+      "name": "The Magician",
+      "number": "1",
+      "arcana": "Major Arcana",
+      "suit": "Trump",
+      "imageUrl": "https://images.unsplash.com/photo-1610466023349-43d9a6c039c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0aGUlMjBtYWdpY2lhbiUyMHRhcm90fGVufDB8fHx8fDE3NjIwOTA2MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wizard alchemy",
+      "keywords": ["manifestation", "resourcefulness", "power", "inspired action"],
+      "meanings": {
+        "light": ["Manifesting your desires", "Using your skills and resources", "Taking action", "Being confident"],
+        "shadow": ["Manipulation", "Deception", "Misusing power", "Untapped potential"]
+      },
+      "description": "The Magician is the card of manifestation, willpower, and inspired action. It suggests that you have all the tools and resources you need to achieve your goals."
+    },
+    {
+      "name": "The High Priestess",
+      "number": "2",
+      "arcana": "Major Arcana",
+      "suit": "Trump",
+      "imageUrl": "https://images.unsplash.com/photo-1605052843828-04f7773f5b5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0aGUlMjBoaWdoJTIwcHJpZXN0ZXNzfGVufDB8fHx8fDE3NjIwOTA2MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mystic woman",
+      "keywords": ["intuition", "unconscious", "inner voice", "secrets"],
+      "meanings": {
+        "light": ["Trusting your intuition", "Accessing your subconscious", "Uncovering secrets", "Having spiritual insight"],
+        "shadow": ["Ignoring your intuition", "Keeping secrets", "Being out of touch with your inner self", "Confusion"]
+      },
+      "description": "The High Priestess signifies intuition, mystery, and the subconscious mind. She encourages you to trust your inner voice and look beyond the obvious."
+    },
+    {
+      "name": "The Empress",
+      "number": "3",
+      "arcana": "Major Arcana",
+      "suit": "Trump",
+      "imageUrl": "https://images.unsplash.com/photo-1605052843828-04f7773f5b5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0aGUlMjBlbXByZXNzJTIwdGFyb3R8ZW58MHx8fHwxNzYyMDkwNjA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "queen nature",
+      "keywords": ["femininity", "beauty", "nature", "nurturing", "abundance"],
+      "meanings": {
+        "light": ["Embracing your feminine energy", "Nurturing yourself and others", "Connecting with nature", "Creating abundance"],
+        "shadow": ["Creative blocks", "Dependence on others", "Smothering", "Neglecting self-care"]
+      },
+      "description": "The Empress represents femininity, nurturing, fertility, and abundance. She is the embodiment of creation and connection to the natural world."
+    },
+    {
+      "name": "The Emperor",
+      "number": "4",
+      "arcana": "Major Arcana",
+      "suit": "Trump",
+      "imageUrl": "https://images.unsplash.com/photo-1610466023349-43d9a6c039c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0aGUlMjBlbXBlcm9yJTIwdGFyb3R8ZW58MHx8fHwxNzYyMDkwNjA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "king throne",
+      "keywords": ["authority", "structure", "control", "father figure"],
+      "meanings": {
+        "light": ["Establishing order and structure", "Exercising authority", "Being disciplined", "Taking on a leadership role"],
+        "shadow": ["Being controlling or rigid", "Abusing power", "Lacking discipline", "Issues with authority"]
+      },
+      "description": "The Emperor symbolizes authority, structure, and control. He brings order to chaos and represents a powerful, fatherly figure who provides stability and security."
+    }
+  ]
+}

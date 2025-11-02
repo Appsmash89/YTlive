@@ -16,3 +16,20 @@ export type CommandLog = {
   feedback: string | undefined;
   timestamp: Date;
 };
+
+export type TarotCard = {
+  name: string;
+  number: string;
+  arcana: string;
+  suit: string;
+  imageUrl: string;
+  imageHint: string;
+  keywords: string[];
+  meanings: {
+    light: string[];
+    shadow: string[];
+  };
+  description: string;
+};
+
+export type DisplayMode = 'fastfood' | 'tarot';
