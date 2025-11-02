@@ -28,7 +28,10 @@ import { Youtube, Bug, Settings2, Languages } from 'lucide-react';
 
 const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries', 'brake', 'up', 'down'];
 
-const INITIAL_MAZE_STATE = generateMaze(11, 15);
+const MAZE_ROWS = 21;
+const MAZE_COLS = 31;
+
+const INITIAL_MAZE_STATE = generateMaze(MAZE_ROWS, MAZE_COLS);
 
 export default function Home() {
   const [keywords, setKeywords] = useState<string[]>(INITIAL_KEYWORDS);
@@ -53,7 +56,7 @@ export default function Home() {
       });
       // Add a small delay before generating a new maze to allow the user to see the completed state
       setTimeout(() => {
-        setMazeState(generateMaze(11, 15));
+        setMazeState(generateMaze(MAZE_ROWS, MAZE_COLS));
       }, 1000);
     }
   }, [mazeState.isComplete, toast]);
@@ -81,7 +84,7 @@ export default function Home() {
     setIsProcessing(true);
     setComments(prev => [comment, ...prev]);
 
-    let result: { command: string | undefined, feedback: string | undefined };
+    let result: { command: string | undefined, feedback: string | undefined } = { command: undefined, feedback: 'No command detected' };
     
     if (displayMode === 'tarot') {
       const tarotResult = getRandomTarotCard();
@@ -168,7 +171,7 @@ export default function Home() {
     setActiveTarotCard(null);
     setCarState({ position: 'center', speed: 'stopped' });
     if (mode === 'findway') {
-      setMazeState(generateMaze(11, 15));
+      setMazeState(generateMaze(MAZE_ROWS, MAZE_COLS));
     }
   }
 
