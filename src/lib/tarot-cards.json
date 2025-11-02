@@ -9,8 +9,8 @@
       "imageHint": "jester cliff",
       "keywords": ["beginnings", "innocence", "spontaneity", "free spirit"],
       "meanings": {
-        "light": ["Being a free spirit", "Having faith", "Living in the moment", "Starting a new journey"],
-        "shadow": ["Being naive or foolish", "Taking unnecessary risks", "Failing to plan ahead", "Lacking a sense of purpose"]
+        "light": ["You are a free spirit", "You have faith in the future", "You are living in the moment", "You are starting a new journey"],
+        "shadow": ["You are being naive or foolish", "You are taking unnecessary risks", "You are failing to plan ahead", "You lack a sense of purpose"]
       },
       "description": "The Fool represents new beginnings, having faith in the future, being inexperienced, not knowing what to expect, having beginner's luck, improvisation and believing in the universe."
     },
@@ -23,8 +23,8 @@
       "imageHint": "wizard alchemy",
       "keywords": ["manifestation", "resourcefulness", "power", "inspired action"],
       "meanings": {
-        "light": ["Manifesting your desires", "Using your skills and resources", "Taking action", "Being confident"],
-        "shadow": ["Manipulation", "Deception", "Misusing power", "Untapped potential"]
+        "light": ["You are manifesting your desires", "You are using your skills and resources", "You are taking action", "You are confident"],
+        "shadow": ["You may be manipulative", "You are being deceptive", "You are misusing your power", "You have untapped potential"]
       },
       "description": "The Magician is the card of manifestation, willpower, and inspired action. It suggests that you have all the tools and resources you need to achieve your goals."
     },
@@ -37,8 +37,8 @@
       "imageHint": "mystic woman",
       "keywords": ["intuition", "unconscious", "inner voice", "secrets"],
       "meanings": {
-        "light": ["Trusting your intuition", "Accessing your subconscious", "Uncovering secrets", "Having spiritual insight"],
-        "shadow": ["Ignoring your intuition", "Keeping secrets", "Being out of touch with your inner self", "Confusion"]
+        "light": ["You trust your intuition", "You are accessing your subconscious", "You are uncovering secrets", "You have spiritual insight"],
+        "shadow": ["You are ignoring your intuition", "You are keeping secrets", "You are out of touch with your inner self", "You are feeling confused"]
       },
       "description": "The High Priestess signifies intuition, mystery, and the subconscious mind. She encourages you to trust your inner voice and look beyond the obvious."
     },
@@ -51,8 +51,8 @@
       "imageHint": "queen nature",
       "keywords": ["femininity", "beauty", "nature", "nurturing", "abundance"],
       "meanings": {
-        "light": ["Embracing your feminine energy", "Nurturing yourself and others", "Connecting with nature", "Creating abundance"],
-        "shadow": ["Creative blocks", "Dependence on others", "Smothering", "Neglecting self-care"]
+        "light": ["You seem to embrace your feminine energy", "You are nurturing yourself and others", "You are connecting with nature", "You are creating abundance"],
+        "shadow": ["You may be feeling creative blocks", "You are dependent on others", "You are smothering someone", "You are neglecting self-care"]
       },
       "description": "The Empress represents femininity, nurturing, fertility, and abundance. She is the embodiment of creation and connection to the natural world."
     },
@@ -65,8 +65,8 @@
       "imageHint": "king throne",
       "keywords": ["authority", "structure", "control", "father figure"],
       "meanings": {
-        "light": ["Establishing order and structure", "Exercising authority", "Being disciplined", "Taking on a leadership role"],
-        "shadow": ["Being controlling or rigid", "Abusing power", "Lacking discipline", "Issues with authority"]
+        "light": ["You are establishing order and structure", "You are exercising your authority", "You are disciplined", "You are taking on a leadership role"],
+        "shadow": ["You are being controlling or rigid", "You are abusing your power", "You are lacking discipline", "You have issues with authority"]
       },
       "description": "The Emperor symbolizes authority, structure, and control. He brings order to chaos and represents a powerful, fatherly figure who provides stability and security."
     }
