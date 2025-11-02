@@ -11,6 +11,7 @@ interface DisplayViewportProps {
     url: string;
     type: string;
     command: string;
+    authorName: string;
     hint?: string;
   } | null;
 }
@@ -40,6 +41,11 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
                 className="object-contain"
                 data-ai-hint={activeMedia.hint || activeMedia.command}
               />
+              <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-lg">
+                <p className="text-sm font-semibold">
+                  Requested by: <span className="font-bold">{activeMedia.authorName}</span>
+                </p>
+              </div>
             </motion.div>
           ) : (
             <div className="flex flex-col items-center text-muted-foreground text-center p-8">

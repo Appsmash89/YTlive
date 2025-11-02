@@ -22,7 +22,7 @@ export default function Home() {
   const [commandHistory, setCommandHistory] = useState<CommandLog[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [activeMedia, setActiveMedia] = useState<{url: string; type: string; command: string} | null>(null);
+  const [activeMedia, setActiveMedia] = useState<{url: string; type: string; command: string; authorName: string;} | null>(null);
   const { toast } = useToast();
 
   const analyzeComment = useCallback((commentText: string, keywords: string[]): { command: string | undefined, feedback: string | undefined } => {
@@ -46,6 +46,7 @@ export default function Home() {
       setActiveMedia({
         ...mediaMap[result.command],
         command: result.command,
+        authorName: comment.author.name,
       });
     }
 
