@@ -58,7 +58,7 @@ const CommandLogDisplay = ({ history }: CommandLogProps) => {
                         <AvatarImage src={log.comment.author.avatar} alt={log.comment.author.name} />
                         <AvatarFallback>{log.comment.author.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{log.comment.author.name}:</span>
+                      <span className="font-medium text-foreground">{log.comment.author.name}:</span>
                       <span>"{log.comment.text}"</span>
                     </div>
                   </div>
