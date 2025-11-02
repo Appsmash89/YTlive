@@ -81,6 +81,13 @@ export function useGameEngine() {
   const handleNewComment = useCallback(async (commentOrText: Comment | string) => {
     const comment = typeof commentOrText === 'string' ? generateMockComment(commentOrText) : commentOrText;
     
+    // This proxy allows the CommentFeed to display comments without triggering the logic here.
+    // @ts-ignore
+    if (handleNewComment.proxy) {
+        // @ts-ignore
+        handleNewComment.proxy(comment);
+    }
+
     setIsProcessing(true);
 
     let result: { command: string | undefined, feedback: string | undefined } = { command: undefined, feedback: 'No command detected' };
@@ -168,6 +175,12 @@ export function useGameEngine() {
         for (const comment of result.comments) {
           if (!seenCommentIds.current.has(comment.id)) {
             seenCommentIds.current.add(comment.id);
+            // This proxy allows the CommentFeed to display comments without triggering the logic here.
+            // @ts-ignore
+            if (handleNewComment.proxy) {
+              // @ts-ignore
+              handleNewComment.proxy(comment);
+            }
             handleNewComment(comment);
           }
         }
