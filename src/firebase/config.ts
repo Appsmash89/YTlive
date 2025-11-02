@@ -4,29 +4,20 @@
 
 import type { FirebaseOptions } from 'firebase/app';
 
-// This is a placeholder for the Firebase configuration.
-// The actual configuration will be populated during the build process.
-
-console.log("🔥 Firebase Env Check (runtime):", {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-});
+// The Firebase configuration is now hardcoded to ensure successful initialization.
+const firebaseConfig: FirebaseOptions = {
+  "projectId": "studio-8694220525-70f3e",
+  "appId": "1:974298549255:web:00f766e3dd5de0c0e92ea2",
+  "apiKey": "AIzaSyDeW9cUWC5QZGIOY6_ElI2BBPs0c-jBx1c",
+  "authDomain": "studio-8694220525-70f3e.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "974298549255"
+};
 
 
 export function getFirebaseConfig(): FirebaseOptions {
-  const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  };
-
   if (!firebaseConfig.apiKey) {
-    throw new Error('Missing NEXT_PUBLIC_FIREBASE_API_KEY environment variable');
+    throw new Error('Missing apiKey in firebaseConfig');
   }
-
   return firebaseConfig;
 };
