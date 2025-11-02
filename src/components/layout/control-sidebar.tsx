@@ -21,6 +21,8 @@ interface ControlSidebarProps {
   onManualComment: (commentText: string) => void;
   displayMode: DisplayMode;
   onModeChange: (mode: DisplayMode) => void;
+  youtubeVideoId: string;
+  onYoutubeVideoIdChange: (id: string) => void;
 }
 
 const ControlSidebar = (props: ControlSidebarProps) => {
@@ -37,6 +39,8 @@ const ControlSidebar = (props: ControlSidebarProps) => {
             <ControlPanel
               isStreaming={props.isStreaming}
               onToggleStreaming={props.onToggleStreaming}
+              youtubeVideoId={props.youtubeVideoId}
+              onYoutubeVideoIdChange={props.onYoutubeVideoIdChange}
             />
           </AccordionContent>
       </AccordionItem>

@@ -25,6 +25,8 @@ export default function Home() {
               onManualComment={gameEngine.handleNewComment}
               displayMode={gameEngine.displayMode}
               onModeChange={gameEngine.changeDisplayMode}
+              youtubeVideoId={gameEngine.youtubeVideoId}
+              onYoutubeVideoIdChange={gameEngine.setYoutubeVideoId}
             />
           </div>
           <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6 p-4 md:p-6 h-full overflow-hidden">

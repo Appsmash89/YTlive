@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type {
   Comment,
@@ -21,6 +21,7 @@ import {
   MAZE_ROWS,
   KEYWORDS_MAP
 } from '@/lib/constants';
+import { fetchLiveChatMessages } from '@/lib/youtube';
 
 const INITIAL_MAZE_STATE = generateMaze(MAZE_ROWS, MAZE_COLS);
 
@@ -30,6 +31,12 @@ export function useGameEngine() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [displayMode, setDisplayMode] = useState<DisplayMode>('fastfood');
+  
+  const [youtubeVideoId, setYoutubeVideoId] = useState<string>('');
+  const [liveChatId, setLiveChatId] = useState<string | null>(null);
+  const pollingIntervalRef = useRef<NodeJS.Timeout>();
+  const pageTokenRef = useRef<string | undefined>();
+  const seenCommentIds = useRef(new Set());
 
   const [activeMedia, setActiveMedia] = useState<ActiveMedia | null>(null);
   const [activeTarotCard, setActiveTarotCard] = useState<TarotCard | null>(null);
@@ -106,9 +113,9 @@ export function useGameEngine() {
           else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') newRow++;
           else if (result.command === 'left' && col > 0 && maze[row][col - 1] !== 'wall') newCol--;
           else if (result.command === 'right' && col < maze[0].length - 1 && maze[row][col + 1] !== 'wall') newCol++;
-
+          
           const newPosition = { row: newRow, col: newCol };
-
+          
           const isComplete = newPosition.row >= 0 && newPosition.row < prevState.maze.length &&
                                newPosition.col >= 0 && newPosition.col < prevState.maze[0].length &&
                                prevState.maze[newPosition.row][newPosition.col] === 'end';
@@ -137,6 +144,72 @@ export function useGameEngine() {
     setCommandHistory(prev => [newLog, ...prev]);
     setIsProcessing(false);
   }, [keywords, analyzeComment, displayMode, getRandomTarotCard]);
+
+  const pollComments = useCallback(async (chatId: string) => {
+    console.log("Polling for comments...");
+    try {
+      const result = await fetchLiveChatMessages({
+        liveChatId: chatId,
+        pageToken: pageTokenRef.current,
+      });
+
+      if (result && result.comments) {
+        for (const comment of result.comments) {
+          if (!seenCommentIds.current.has(comment.id)) {
+            seenCommentIds.current.add(comment.id);
+            handleNewComment(comment);
+          }
+        }
+        pageTokenRef.current = result.nextPageToken;
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to fetch comments",
+        description: "Could not connect to YouTube. Please check the video ID and your API key.",
+      });
+      toggleStreaming(false); // Stop streaming on error
+    }
+  }, [handleNewComment, toast]);
+  
+  const toggleStreaming = useCallback((forceState?: boolean) => {
+    setIsStreaming(current => {
+      const nextState = typeof forceState === 'boolean' ? forceState : !current;
+      if (nextState) { // If turning on
+        if (!youtubeVideoId) {
+          toast({
+            variant: "destructive",
+            title: "YouTube Video ID missing",
+            description: "Please enter a YouTube Live Video ID to start streaming.",
+          });
+          return false;
+        }
+        // Start polling logic
+        console.log(`Starting stream for video ID: ${youtubeVideoId}`);
+        // Reset state for new stream
+        pageTokenRef.current = undefined;
+        seenCommentIds.current.clear();
+        setCommandHistory([]);
+        
+        // This is where you would get the liveChatId from the videoId
+        // For now, we'll simulate it. In a real app, this would be an API call.
+        const mockLiveChatId = 'mock-chat-id-for-' + youtubeVideoId;
+        setLiveChatId(mockLiveChatId);
+
+        pollComments(mockLiveChatId); // Poll immediately
+        pollingIntervalRef.current = setInterval(() => pollComments(mockLiveChatId), 5000);
+
+      } else { // If turning off
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = undefined;
+        }
+        console.log("Stopping stream");
+      }
+      return nextState;
+    });
+  }, [youtubeVideoId, toast, pollComments]);
   
   const addKeyword = (keyword: string) => {
     const newKeyword = keyword.trim().toLowerCase();
@@ -159,8 +232,6 @@ export function useGameEngine() {
     }
   };
 
-  const toggleStreaming = () => setIsStreaming(prev => !prev);
-
   return {
     keywords,
     commandHistory,
@@ -171,6 +242,8 @@ export function useGameEngine() {
     activeTarotCard,
     carState,
     mazeState,
+    youtubeVideoId,
+    setYoutubeVideoId,
     addKeyword,
     removeKeyword,
     handleNewComment,

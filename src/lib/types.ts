@@ -60,3 +60,12 @@ export type ActiveMedia = {
   authorName: string;
   hint?: string;
 };
+
+export type YouTubeComment = {
+  id: string;
+  author: {
+    name: string;
+    avatar: string;
+  };
+  text: string;
+};

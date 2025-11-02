@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,42 +16,58 @@ interface CommentFeedProps {
 }
 
 const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedProps) => {
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const commentsContainerRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [internalComments, setInternalComments] = useState<Comment[]>([]);
 
-  const handleNewComment = useCallback((comment: Comment) => {
-    setInternalComments((prev) => [comment, ...prev].slice(0, 50));
-    onNewComment(comment);
-  }, [onNewComment]);
-
-  const startStreaming = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      handleNewComment(generateMockComment());
-    }, 3000);
-  }, [handleNewComment]);
+  // The parent (useGameEngine) now controls the comment flow.
+  // This component just receives new comments and displays them.
+  // We'll use a side-effect to listen for new comments and add them.
+  const originalOnNewComment = useRef(onNewComment);
 
   useEffect(() => {
+    // A little trick to get the latest comment into our internal state
+    // without re-running all the parent effects.
+    const handleNewComment = (comment: Comment) => {
+       setInternalComments((prev) => [comment, ...prev].slice(0, 50));
+    };
+
+    // We replace the onNewComment prop with our own handler.
+    // And we call the original one from inside.
+    const newCommentHandler = (comment: Comment) => {
+        handleNewComment(comment);
+        // We don't call the original prop anymore, as it's handled by the engine.
+    };
+
+    // This is a bit of a workaround because the parent hook is now the source of truth.
+    // In a real scenario with websockets or a library like react-query, this would be cleaner.
     if (isStreaming) {
-      startStreaming();
-    } else if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+        // We don't start any intervals here anymore.
     }
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+  }, [isStreaming]);
+
+  // We need to manually handle new comments coming from props.
+  useEffect(() => {
+    // This is a proxy to allow the parent to push comments into this component.
+    const originalHandler = (comment: Comment) => {
+      setInternalComments((prev) => [comment, ...prev].slice(0, 50));
     };
-  }, [isStreaming, startStreaming]);
+    
+    // @ts-ignore
+    onNewComment.proxy = originalHandler;
+
+    return () => {
+        // @ts-ignore
+        onNewComment.proxy = undefined;
+    }
+  }, [onNewComment]);
+
 
   useEffect(() => {
     const scrollContainer = commentsContainerRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
     if (scrollContainer) {
       scrollContainer.scrollTo({
-        top: scrollContainer.scrollHeight,
+        top: 0,
         behavior: 'smooth',
       });
     }
@@ -74,11 +90,11 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
                     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8 min-h-[200px]">
                         <MessagesSquare className="h-10 w-10 mb-4" />
                         <p className="font-medium">Comments will appear here</p>
-                        <p className="text-sm">Enable "Live Comments" in the control panel to start the simulation.</p>
+                        <p className="text-sm">{isStreaming ? "Waiting for comments from the stream..." : "Enable streaming in the control panel."}</p>
                     </div>
                 ) : (
-                    internalComments.slice().reverse().map((comment) => (
-                    <div key={comment.id} className="flex items-start gap-3">
+                    internalComments.map((comment) => (
+                    <div key={comment.id} className="flex items-start gap-3 animate-in fade-in-0 slide-in-from-top-4 duration-500">
                         <Avatar className="h-8 w-8 border">
                         <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
                         <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
