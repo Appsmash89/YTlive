@@ -2,7 +2,6 @@
 "use server";
 import { google } from 'googleapis';
 import type { YouTubeComment } from './types';
-import { generateMockComment } from './mock-data';
 
 const youtube = google.youtube('v3');
 
@@ -11,7 +10,8 @@ export async function getLiveChatId(videoId: string): Promise<string | null> {
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     console.error('GOOGLE_API_KEY is not set.');
-    throw new Error('GOOGLE_API_KEY is not configured on the server.');
+    // Silently fail if key is not set, the UI will handle it.
+    return null;
   }
 
   try {
@@ -30,7 +30,8 @@ export async function getLiveChatId(videoId: string): Promise<string | null> {
     }
   } catch (error) {
     console.error("Error fetching live chat ID:", error);
-    throw new Error("Could not retrieve live chat details from YouTube. Check the video ID.");
+    // Return null to allow the UI to handle the error gracefully
+    return null;
   }
 }
 
@@ -85,4 +86,3 @@ export async function fetchLiveChatMessages({
      }
   }
 }
-
