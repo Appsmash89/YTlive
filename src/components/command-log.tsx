@@ -15,20 +15,20 @@ interface CommandLogProps {
 const CommandLogDisplay = ({ history }: CommandLogProps) => {
   return (
     <Card className="flex-1 flex flex-col h-full">
-      <CardHeader className="flex flex-row items-center gap-2">
-         <Terminal className="h-5 w-5" />
+      <CardHeader className="flex flex-row items-center gap-3">
+         <Terminal className="h-5 w-5 text-primary" />
         <CardTitle>Command Log</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-0">
         <ScrollArea className="h-full">
           {history.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8 min-h-[200px]">
                 <Terminal className="h-10 w-10 mb-4" />
                 <p className="font-medium">Executed commands will be logged here</p>
                 <p className="text-sm">Awaiting comments from the feed...</p>
             </div>
           ) : (
-          <div className="p-4 space-y-4">
+          <div className="p-4 md:p-6 space-y-4">
             {history.map(log => (
               <div key={log.id} className="flex gap-4 items-start">
                 <div>
@@ -38,7 +38,7 @@ const CommandLogDisplay = ({ history }: CommandLogProps) => {
                     <MessageSquareWarning className="h-5 w-5 text-muted-foreground" />
                   )}
                 </div>
-                <div className="flex-1 space-y-1 text-sm">
+                <div className="flex-1 space-y-1.5 text-sm">
                   <div className="flex justify-between items-center">
                     <p className="font-semibold">
                       {log.command ? (
@@ -59,7 +59,7 @@ const CommandLogDisplay = ({ history }: CommandLogProps) => {
                         <AvatarFallback>{log.comment.author.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <span className="font-medium text-foreground">{log.comment.author.name}:</span>
-                      <span>"{log.comment.text}"</span>
+                      <span className="truncate">"{log.comment.text}"</span>
                     </div>
                   </div>
                   

@@ -40,12 +40,12 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
 
 
   return (
-    <Card className="w-full h-[480px]">
-      <CardHeader className="flex flex-row items-center gap-2">
-        <Clapperboard className="h-5 w-5" />
+    <Card className="w-full h-full">
+      <CardHeader className="flex flex-row items-center gap-3">
+        <Clapperboard className="h-5 w-5 text-primary" />
         <CardTitle>Display Viewport</CardTitle>
       </CardHeader>
-      <CardContent className="flex h-[calc(100%-72px)] items-center justify-center bg-muted/30 rounded-b-lg overflow-hidden relative">
+      <CardContent className="h-[calc(100%-80px)] bg-muted/30 rounded-b-lg overflow-hidden relative">
         <AnimatePresence mode="wait">
           {content ? (
             <motion.div
@@ -67,8 +67,8 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
                         className="object-cover"
                         data-ai-hint={content.hint}
                     />
-                     <div className="absolute bottom-4 left-4 z-20 bg-black/50 text-white px-3 py-1.5 rounded-lg">
-                        <p className="text-sm font-semibold">
+                     <div className="absolute bottom-4 left-4 z-20 bg-black/50 text-white px-3 py-1.5 rounded-lg text-sm">
+                        <p>
                             Requested by: <span className="font-bold">{content.authorName}</span>
                         </p>
                     </div>
@@ -112,7 +112,7 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, 
           ) : isFindWay ? (
               <FindWayPuzzle mazeState={mazeState!} />
           ) : (
-            <div className="flex flex-col items-center text-muted-foreground text-center p-8">
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground text-center p-8">
               <VideoOff className="h-12 w-12 mb-4" />
               <p className="font-medium text-lg">Display is offline</p>
               <p className="text-sm">Commands from user comments will appear here.</p>

@@ -11,11 +11,11 @@ export default function Home() {
   const gameEngine = useGameEngine();
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col h-screen bg-background text-foreground">
       <Header />
-      <main className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 md:p-6">
-          <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
+      <main className="flex-1 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-12 h-full">
+          <div className="md:col-span-4 lg:col-span-3 h-full overflow-y-auto p-4 md:p-6 border-r">
             <ControlSidebar
               isStreaming={gameEngine.isStreaming}
               onToggleStreaming={gameEngine.toggleStreaming}
@@ -27,8 +27,8 @@ export default function Home() {
               onModeChange={gameEngine.changeDisplayMode}
             />
           </div>
-          <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
-            <div>
+          <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6 p-4 md:p-6 h-full overflow-hidden">
+            <div className="flex-[2_2_0%]">
               <DisplayViewport
                 displayMode={gameEngine.displayMode}
                 activeMedia={gameEngine.activeMedia}
@@ -37,15 +37,15 @@ export default function Home() {
                 mazeState={gameEngine.mazeState}
               />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">
-              <div className="flex flex-col">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-[1_1_0%] min-h-0">
+              <div className="flex flex-col h-full">
                 <CommentFeed
                   onNewComment={gameEngine.handleNewComment}
                   isStreaming={gameEngine.isStreaming}
                   isProcessing={gameEngine.isProcessing}
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col h-full">
                 <CommandLogDisplay history={gameEngine.commandHistory} />
               </div>
             </div>

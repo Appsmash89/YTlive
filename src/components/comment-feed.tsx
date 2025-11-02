@@ -48,10 +48,10 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
   }, [isStreaming, startStreaming]);
 
   useEffect(() => {
-    if (commentsContainerRef.current) {
-      const { scrollHeight, clientHeight } = commentsContainerRef.current;
-      commentsContainerRef.current.scrollTo({
-        top: scrollHeight - clientHeight,
+    const scrollContainer = commentsContainerRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight,
         behavior: 'smooth',
       });
     }
@@ -61,17 +61,17 @@ const CommentFeed = ({ onNewComment, isStreaming, isProcessing }: CommentFeedPro
   return (
     <Card className="flex-1 flex flex-col h-full">
       <CardHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center gap-2">
-            <MessagesSquare className="h-5 w-5" />
+        <div className="flex items-center gap-3">
+            <MessagesSquare className="h-5 w-5 text-primary" />
             <CardTitle>Comment Feed</CardTitle>
         </div>
         {isProcessing && <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />}
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-0">
         <ScrollArea className="h-full" ref={commentsContainerRef}>
-            <div className="p-4 space-y-4" ref={scrollAreaRef}>
+            <div className="p-4 md:p-6 space-y-4">
                 {internalComments.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+                    <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8 min-h-[200px]">
                         <MessagesSquare className="h-10 w-10 mb-4" />
                         <p className="font-medium">Comments will appear here</p>
                         <p className="text-sm">Enable "Live Comments" in the control panel to start the simulation.</p>

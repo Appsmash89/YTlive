@@ -15,12 +15,12 @@ const ControlPanel = ({
   onToggleStreaming,
 }: ControlPanelProps) => {
   return (
-      <CardContent className="space-y-4">
+      <CardContent className="p-4 md:p-6 space-y-4">
         <div className="space-y-2">
           <Label htmlFor="stream-url">YouTube Stream URL</Label>
           <Input id="stream-url" placeholder="https://youtube.com/live/..." />
         </div>
-        <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+        <div className="flex items-center justify-between rounded-lg border p-3">
           <div className="space-y-0.5">
             <Label htmlFor="stream-status">Live Comments</Label>
             <p className="text-xs text-muted-foreground">

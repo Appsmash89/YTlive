@@ -32,12 +32,12 @@ const DevTools = ({ onManualComment, keywords, displayMode, onModeChange }: DevT
   const relevantKeywords = KEYWORDS_MAP[displayMode] || keywords.filter(k => !Object.values(KEYWORDS_MAP).flat().includes(k));
 
   return (
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
+      <CardContent className="p-4 md:p-6 space-y-6">
+        <div className="space-y-3">
             <Label>Display Mode</Label>
             <RadioGroup
               defaultValue="fastfood"
-              className="grid grid-cols-2 gap-4"
+              className="grid grid-cols-2 gap-2"
               onValueChange={(value: DisplayMode) => onModeChange(value)}
               value={displayMode}
             >
@@ -45,68 +45,70 @@ const DevTools = ({ onManualComment, keywords, displayMode, onModeChange }: DevT
                 <RadioGroupItem value="fastfood" id="fastfood" className="peer sr-only" />
                 <Label
                   htmlFor="fastfood"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  className="flex items-center gap-2 rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
-                  <Utensils className="mb-3 h-6 w-6" />
-                  FastFood
+                  <Utensils className="h-5 w-5" />
+                  <span className="font-medium">FastFood</span>
                 </Label>
               </div>
               <div>
                 <RadioGroupItem value="tarot" id="tarot" className="peer sr-only" />
                 <Label
                   htmlFor="tarot"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  className="flex items-center gap-2 rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
-                  <Sparkles className="mb-3 h-6 w-6" />
-                  Tarot
+                  <Sparkles className="h-5 w-5" />
+                  <span className="font-medium">Tarot</span>
                 </Label>
               </div>
               <div>
                 <RadioGroupItem value="drive" id="drive" className="peer sr-only" />
                 <Label
                   htmlFor="drive"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  className="flex items-center gap-2 rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
-                  <Car className="mb-3 h-6 w-6" />
-                  Drive
+                  <Car className="h-5 w-5" />
+                  <span className="font-medium">Drive</span>
                 </Label>
               </div>
               <div>
                 <RadioGroupItem value="findway" id="findway" className="peer sr-only" />
                 <Label
                   htmlFor="findway"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  className="flex items-center gap-2 rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
-                  <Waypoints className="mb-3 h-6 w-6" />
-                  Find Way
+                  <Waypoints className="h-5 w-5" />
+                  <span className="font-medium">Find Way</span>
                 </Label>
               </div>
             </RadioGroup>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
            <Label>Manual Comment</Label>
-          <Textarea
-            placeholder="Type a comment..."
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendComment();
-              }
-            }}
-          />
-          <Button onClick={handleSendComment} className="w-full">
-            <Send className="mr-2" />
-            Send Comment
-          </Button>
+           <div className="space-y-2">
+            <Textarea
+              placeholder="Type a comment..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendComment();
+                }
+              }}
+            />
+            <Button onClick={handleSendComment} className="w-full">
+              <Send className="mr-2" />
+              Send Comment
+            </Button>
+           </div>
         </div>
         
         {relevantKeywords.length > 0 && (
-          <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Click to send a keyword comment:</p>
-              <ScrollArea className="h-24">
+          <div className="space-y-3">
+              <Label>Keyword Shortcuts</Label>
+              <ScrollArea className="h-24 border rounded-md p-2">
                   <div className="flex flex-wrap gap-2">
                       {relevantKeywords.map((keyword) => (
                           <Badge 
