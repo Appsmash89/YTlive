@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { Comment, CommandLog, DisplayMode, TarotCard, CarState, MazeState } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,10 +23,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Youtube, Bug, Settings2, Languages, Music } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Youtube, Bug, Languages } from 'lucide-react';
 
 const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries', 'brake', 'up', 'down'];
 
@@ -48,14 +46,8 @@ export default function Home() {
   const [carState, setCarState] = useState<CarState>({ position: 'center', speed: 'stopped' });
   const [mazeState, setMazeState] = useState<MazeState>(INITIAL_MAZE_STATE);
   
-  const [validMoveSoundUrl, setValidMoveSoundUrl] = useState('https://github.com/goldfire/howler.js/raw/master/examples/player/sounds/sprite.mp3');
-  const [invalidMoveSoundUrl, setInvalidMoveSoundUrl] = useState('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-
   const { toast } = useToast();
 
-  const validMoveAudioRef = useRef<HTMLAudioElement>(null);
-  const invalidMoveAudioRef = useRef<HTMLAudioElement>(null);
-  
   useEffect(() => {
     if (mazeState.isComplete) {
       toast({
@@ -122,21 +114,12 @@ export default function Home() {
           
           const { maze, playerPosition } = prevState;
           let { row, col } = playerPosition;
-          let newRow = row;
-          let newCol = col;
+          let { newRow, newCol } = {row:row, col:col};
 
           if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') newRow--;
           else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') newRow++;
           else if (result.command === 'left' && col > 0 && maze[row][col - 1] !== 'wall') newCol--;
           else if (result.command === 'right' && col < maze[0].length - 1 && maze[row][col + 1] !== 'wall') newCol++;
-
-          const positionChanged = newRow !== row || newCol !== col;
-
-          if (positionChanged) {
-            validMoveAudioRef.current?.play().catch(e => console.error("Error playing valid move sound:", e));
-          } else {
-            invalidMoveAudioRef.current?.play().catch(e => console.error("Error playing invalid move sound:", e));
-          }
 
           const newPosition = { row: newRow, col: newCol };
           const isComplete = prevState.maze[newPosition.row][newPosition.col] === 'end';
@@ -241,42 +224,6 @@ export default function Home() {
                 </Card>
               </AccordionItem>
 
-              <AccordionItem value="game-audio" className="border-none">
-                <Card>
-                  <AccordionTrigger className="p-6 hover:no-underline">
-                      <CardHeader className="p-0">
-                        <CardTitle className="flex items-center gap-2">
-                          <Music className="h-5 w-5" />
-                          Game Audio
-                        </CardTitle>
-                        <CardDescription>Customize in-game sound effects.</CardDescription>
-                      </CardHeader>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="valid-move-sound">Valid Move Sound URL</Label>
-                          <Input 
-                            id="valid-move-sound"
-                            value={validMoveSoundUrl}
-                            onChange={(e) => setValidMoveSoundUrl(e.target.value)}
-                            placeholder="Enter URL for valid move sound"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="invalid-move-sound">Invalid Move Sound URL</Label>
-                          <Input 
-                            id="invalid-move-sound"
-                            value={invalidMoveSoundUrl}
-                            onChange={(e) => setInvalidMoveSoundUrl(e.target.value)}
-                            placeholder="Enter URL for invalid move sound"
-                          />
-                        </div>
-                      </CardContent>
-                  </AccordionContent>
-                </Card>
-              </AccordionItem>
-
               <AccordionItem value="dev-tools" className="border-none">
                 <Card>
                     <AccordionTrigger className="p-6 hover:no-underline">
@@ -325,12 +272,7 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <audio ref={validMoveAudioRef} src={validMoveSoundUrl} />
-      <audio ref={invalidMoveAudioRef} src={invalidMoveSoundUrl} />
     </div>
   );
-}
-
-  
 
     
