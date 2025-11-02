@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useCallback } from 'react';
-import type { Comment, CommandLog, DisplayMode, TarotCard, CarState } from '@/lib/types';
+import { useState, useCallback, useEffect } from 'react';
+import type { Comment, CommandLog, DisplayMode, TarotCard, CarState, MazeState } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import Header from '@/components/layout/header';
@@ -14,6 +14,8 @@ import { generateMockComment } from '@/lib/mock-data';
 import DisplayViewport from '@/components/display-viewport';
 import { mediaMap } from '@/lib/media';
 import { tarotCards } from '@/lib/tarot-cards';
+import { generateMaze } from '@/lib/maze';
+
 
 import {
   Accordion,
@@ -24,7 +26,9 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Youtube, Bug, Settings2, Languages } from 'lucide-react';
 
-const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries', 'brake'];
+const INITIAL_KEYWORDS = ['forward', 'back', 'left', 'right', 'jump', 'stop', 'go', 'pizza', 'burger', 'coke', 'fries', 'brake', 'up', 'down'];
+
+const INITIAL_MAZE_STATE = generateMaze(11, 15);
 
 export default function Home() {
   const [keywords, setKeywords] = useState<string[]>(INITIAL_KEYWORDS);
@@ -37,8 +41,22 @@ export default function Home() {
   const [activeMedia, setActiveMedia] = useState<{url: string; type: string; command: string; authorName: string;} | null>(null);
   const [activeTarotCard, setActiveTarotCard] = useState<TarotCard | null>(null);
   const [carState, setCarState] = useState<CarState>({ position: 'center', speed: 'stopped' });
+  const [mazeState, setMazeState] = useState<MazeState>(INITIAL_MAZE_STATE);
   
   const { toast } = useToast();
+  
+  useEffect(() => {
+    if (mazeState.isComplete) {
+      toast({
+        title: "Puzzle Complete!",
+        description: "A new maze has been generated.",
+      });
+      // Add a small delay before generating a new maze to allow the user to see the completed state
+      setTimeout(() => {
+        setMazeState(generateMaze(11, 15));
+      }, 1000);
+    }
+  }, [mazeState.isComplete, toast]);
 
   const analyzeComment = useCallback((commentText: string, keywords: string[]): { command: string | undefined, feedback: string | undefined } => {
     const lowerCaseComment = commentText.toLowerCase();
@@ -85,6 +103,26 @@ export default function Home() {
           return { position, speed };
         });
       }
+    } else if (displayMode === 'findway') {
+       result = analyzeComment(comment.text, ['up', 'down', 'left', 'right']);
+      if (result.command) {
+        setMazeState(prevState => {
+          if (prevState.isComplete) return prevState;
+          
+          const { maze, playerPosition } = prevState;
+          let { row, col } = playerPosition;
+
+          if (result.command === 'up' && row > 0 && maze[row - 1][col] !== 'wall') row--;
+          else if (result.command === 'down' && row < maze.length - 1 && maze[row + 1][col] !== 'wall') row++;
+          else if (result.command === 'left' && col > 0 && maze[row][col - 1] !== 'wall') col--;
+          else if (result.command === 'right' && col < maze[0].length - 1 && maze[row][col + 1] !== 'wall') col++;
+
+          const newPosition = { row, col };
+          const isComplete = maze[newPosition.row][newPosition.col] === 'end';
+
+          return { ...prevState, playerPosition: newPosition, isComplete };
+        });
+      }
     }
     else { // FastFood mode
       result = analyzeComment(comment.text, keywords);
@@ -129,6 +167,9 @@ export default function Home() {
     setActiveMedia(null);
     setActiveTarotCard(null);
     setCarState({ position: 'center', speed: 'stopped' });
+    if (mode === 'findway') {
+      setMazeState(generateMaze(11, 15));
+    }
   }
 
   return (
@@ -209,6 +250,7 @@ export default function Home() {
                 activeTarotCard={activeTarotCard}
                 displayMode={displayMode}
                 carState={carState}
+                mazeState={mazeState}
               />
              </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-[300px]">

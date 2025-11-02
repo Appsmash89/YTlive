@@ -34,9 +34,21 @@ export type TarotCard = {
   description: string;
 };
 
-export type DisplayMode = 'fastfood' | 'tarot' | 'drive';
+export type DisplayMode = 'fastfood' | 'tarot' | 'drive' | 'findway';
 
 export type CarState = {
   position: 'center' | 'left' | 'right';
   speed: 'moving' | 'stopped';
+};
+
+export type CellType = 'path' | 'wall' | 'start' | 'end';
+export type Maze = CellType[][];
+export type Position = {
+  row: number;
+  col: number;
+};
+export type MazeState = {
+  maze: Maze;
+  playerPosition: Position;
+  isComplete: boolean;
 };

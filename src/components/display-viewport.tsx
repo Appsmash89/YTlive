@@ -5,8 +5,10 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clapperboard, VideoOff, Sparkles, Paintbrush, ShieldCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { TarotCard, DisplayMode, CarState } from '@/lib/types';
+import type { TarotCard, DisplayMode, CarState, MazeState } from '@/lib/types';
 import DriveAnimation from './drive-animation';
+import FindWayPuzzle from './find-way-puzzle';
+
 
 interface DisplayViewportProps {
   activeMedia: {
@@ -19,12 +21,15 @@ interface DisplayViewportProps {
   activeTarotCard: TarotCard | null;
   displayMode: DisplayMode;
   carState?: CarState;
+  mazeState?: MazeState;
 }
 
-const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState }: DisplayViewportProps) => {
+const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState, mazeState }: DisplayViewportProps) => {
   const isFastFood = displayMode === 'fastfood' && activeMedia;
   const isTarot = displayMode === 'tarot' && activeTarotCard;
   const isDrive = displayMode === 'drive';
+  const isFindWay = displayMode === 'findway';
+
 
   let content = null;
   if (isFastFood) {
@@ -116,6 +121,8 @@ const DisplayViewport = ({ activeMedia, activeTarotCard, displayMode, carState }
             </motion.div>
           ) : isDrive ? (
               <DriveAnimation carState={carState!} />
+          ) : isFindWay ? (
+              <FindWayPuzzle mazeState={mazeState!} />
           ) : (
             <div className="flex flex-col items-center text-muted-foreground text-center p-8">
               <VideoOff className="h-12 w-12 mb-4" />
