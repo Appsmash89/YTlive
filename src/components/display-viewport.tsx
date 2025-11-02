@@ -28,9 +28,9 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
           {activeMedia ? (
             <motion.div
               key={activeMedia.url}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="absolute inset-0"
             >
@@ -39,7 +39,7 @@ const DisplayViewport = ({ activeMedia }: DisplayViewportProps) => {
                   src={activeMedia.url}
                   alt={activeMedia.command}
                   fill
-                  className="object-contain"
+                  className="object-cover"
                   data-ai-hint={activeMedia.hint || activeMedia.command}
                 />
                 <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-lg">
