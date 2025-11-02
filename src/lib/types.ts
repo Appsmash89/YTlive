@@ -1,3 +1,4 @@
+
 export type Author = {
   name: string;
   avatar: string;
@@ -69,3 +70,5 @@ export type YouTubeComment = {
   };
   text: string;
 };
+
+export type StreamStatus = 'idle' | 'connecting' | 'connected' | 'error';

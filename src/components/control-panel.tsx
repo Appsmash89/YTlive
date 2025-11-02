@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Input } from '@/components/ui/input';
@@ -6,20 +7,23 @@ import { Label } from '@/components/ui/label';
 import { CardContent } from '@/components/ui/card';
 import { useState } from 'react';
 import { Button } from './ui/button';
+import { Loader2 } from 'lucide-react';
+import type { StreamStatus } from '@/lib/types';
 
 interface ControlPanelProps {
-  isStreaming: boolean;
+  streamStatus: StreamStatus;
   onToggleStreaming: () => void;
   youtubeVideoId: string;
   onYoutubeVideoIdChange: (id: string) => void;
 }
 
 const ControlPanel = ({
-  isStreaming,
+  streamStatus,
   onToggleStreaming,
   youtubeVideoId,
   onYoutubeVideoIdChange,
 }: ControlPanelProps) => {
+  const isStreaming = streamStatus === 'connected' || streamStatus === 'connecting';
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -32,6 +36,19 @@ const ControlPanel = ({
       }
     } catch (error) {
        onYoutubeVideoIdChange(e.target.value); // Allow direct ID paste
+    }
+  }
+
+  const getStatusText = () => {
+    switch(streamStatus) {
+      case 'idle':
+        return 'Stream connection paused.';
+      case 'connecting':
+        return 'Connecting to stream...';
+      case 'connected':
+        return 'Fetching live comments.';
+      case 'error':
+        return 'Connection failed. Check ID/key.';
     }
   }
 
@@ -48,9 +65,12 @@ const ControlPanel = ({
         </div>
         <div className="flex items-center justify-between rounded-lg border p-3">
           <div className="space-y-0.5">
-            <Label htmlFor="stream-status">Live Comments</Label>
+            <div className='flex items-center gap-2'>
+              <Label htmlFor="stream-status">Live Comments</Label>
+              {streamStatus === 'connecting' && <Loader2 className="h-4 w-4 animate-spin" />}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {isStreaming ? 'Fetching live comments.' : 'Stream connection paused.'}
+              {getStatusText()}
             </p>
           </div>
           <Switch

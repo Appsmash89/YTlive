@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -10,10 +11,10 @@ import { Youtube, Bug, Languages } from 'lucide-react';
 import ControlPanel from '@/components/control-panel';
 import KeywordEditor from '@/components/keyword-editor';
 import DevTools from '@/components/dev-tools';
-import type { DisplayMode } from '@/lib/types';
+import type { DisplayMode, StreamStatus } from '@/lib/types';
 
 interface ControlSidebarProps {
-  isStreaming: boolean;
+  streamStatus: StreamStatus;
   onToggleStreaming: () => void;
   keywords: string[];
   onAddKeyword: (keyword: string) => void;
@@ -37,7 +38,7 @@ const ControlSidebar = (props: ControlSidebarProps) => {
           </AccordionTrigger>
           <AccordionContent className="border-t">
             <ControlPanel
-              isStreaming={props.isStreaming}
+              streamStatus={props.streamStatus}
               onToggleStreaming={props.onToggleStreaming}
               youtubeVideoId={props.youtubeVideoId}
               onYoutubeVideoIdChange={props.onYoutubeVideoIdChange}

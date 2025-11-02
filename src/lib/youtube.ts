@@ -1,11 +1,43 @@
+
 "use server";
 import { google } from 'googleapis';
 import type { YouTubeComment } from './types';
 
 const youtube = google.youtube('v3');
 
-// This function would live on a server, not in the client bundle.
-// For this example, we'll call it from a Server Action or a dedicated API route.
+// This function finds the liveChatId for a given video ID.
+export async function getLiveChatId(videoId: string): Promise<string | null> {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    throw new Error('GOOGLE_API_KEY is not set in .env file');
+  }
+
+  // If videoId is a mock, return a mock chat ID
+  if (videoId === 'mock-video-id') {
+    return 'mock-chat-id-for-' + videoId;
+  }
+  
+  try {
+    const response = await youtube.videos.list({
+      key: apiKey,
+      id: [videoId],
+      part: ['liveStreamingDetails'],
+    });
+
+    const video = response.data.items?.[0];
+    if (video && video.liveStreamingDetails && video.liveStreamingDetails.activeLiveChatId) {
+      return video.liveStreamingDetails.activeLiveChatId;
+    } else {
+      return null; // Not a live video or chat is disabled
+    }
+  } catch (error) {
+    console.error("Error fetching live chat ID:", error);
+    throw new Error("Could not retrieve live chat details from YouTube. Check the video ID.");
+  }
+}
+
+
+// This function fetches messages from a specific live chat.
 export async function fetchLiveChatMessages({
   liveChatId,
   pageToken,
@@ -26,6 +58,7 @@ export async function fetchLiveChatMessages({
 
   // If liveChatId is a mock, return mock comments
   if (liveChatId.startsWith('mock-chat-id')) {
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
     const mockComments = [
       {
         id: `mock-${Date.now()}`,
@@ -45,26 +78,31 @@ export async function fetchLiveChatMessages({
     };
   }
 
-  const response = await youtube.liveChatMessages.list({
-    key: apiKey,
-    liveChatId,
-    part: ['snippet', 'authorDetails'],
-    pageToken: pageToken,
-  });
+  try {
+    const response = await youtube.liveChatMessages.list({
+      key: apiKey,
+      liveChatId,
+      part: ['snippet', 'authorDetails'],
+      pageToken: pageToken,
+    });
 
-  const messages = response.data.items || [];
-  const comments: YouTubeComment[] = messages.map(item => ({
-    id: item.id!,
-    author: {
-      name: item.authorDetails!.displayName!,
-      avatar: item.authorDetails!.profileImageUrl!,
-    },
-    text: item.snippet!.displayMessage!,
-  }));
+    const messages = response.data.items || [];
+    const comments: YouTubeComment[] = messages.map(item => ({
+      id: item.id!,
+      author: {
+        name: item.authorDetails!.displayName!,
+        avatar: item.authorDetails!.profileImageUrl!,
+      },
+      text: item.snippet!.displayMessage!,
+    }));
 
-  return {
-    comments,
-    nextPageToken: response.data.nextPageToken ?? undefined,
-    pollingIntervalMillis: response.data.pollingIntervalMillis ?? undefined,
-  };
+    return {
+      comments,
+      nextPageToken: response.data.nextPageToken ?? undefined,
+      pollingIntervalMillis: response.data.pollingIntervalMillis ?? undefined,
+    };
+  } catch(error: any) {
+     console.error("Error in fetchLiveChatMessages: ", error.message);
+     throw new Error("Failed to fetch comments from YouTube. Is the stream active?");
+  }
 }

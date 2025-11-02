@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from 'react';
@@ -10,6 +11,7 @@ import type {
   CarState,
   MazeState,
   ActiveMedia,
+  StreamStatus,
 } from '@/lib/types';
 import { generateMockComment } from '@/lib/mock-data';
 import { mediaMap } from '@/lib/media';
@@ -21,14 +23,14 @@ import {
   MAZE_ROWS,
   KEYWORDS_MAP
 } from '@/lib/constants';
-import { fetchLiveChatMessages } from '@/lib/youtube';
+import { fetchLiveChatMessages, getLiveChatId } from '@/lib/youtube';
 
 const INITIAL_MAZE_STATE = generateMaze(MAZE_ROWS, MAZE_COLS);
 
 export function useGameEngine() {
   const [keywords, setKeywords] = useState<string[]>(INITIAL_KEYWORDS);
   const [commandHistory, setCommandHistory] = useState<CommandLog[]>([]);
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamStatus, setStreamStatus] = useState<StreamStatus>('idle');
   const [isProcessing, setIsProcessing] = useState(false);
   const [displayMode, setDisplayMode] = useState<DisplayMode>('fastfood');
   
@@ -44,6 +46,7 @@ export function useGameEngine() {
   const [mazeState, setMazeState] = useState<MazeState>(INITIAL_MAZE_STATE);
 
   const { toast } = useToast();
+  const isStreaming = streamStatus === 'connected' || streamStatus === 'connecting';
 
   useEffect(() => {
     if (mazeState.isComplete) {
@@ -146,7 +149,6 @@ export function useGameEngine() {
   }, [keywords, analyzeComment, displayMode, getRandomTarotCard]);
 
   const pollComments = useCallback(async (chatId: string) => {
-    console.log("Polling for comments...");
     try {
       const result = await fetchLiveChatMessages({
         liveChatId: chatId,
@@ -154,6 +156,15 @@ export function useGameEngine() {
       });
 
       if (result && result.comments) {
+        // On first successful poll, mark as connected
+        if (streamStatus !== 'connected') {
+          setStreamStatus('connected');
+           toast({
+             title: 'Successfully connected!',
+             description: 'Now listening for live comments.',
+           });
+        }
+
         for (const comment of result.comments) {
           if (!seenCommentIds.current.has(comment.id)) {
             seenCommentIds.current.add(comment.id);
@@ -169,47 +180,75 @@ export function useGameEngine() {
         title: "Failed to fetch comments",
         description: "Could not connect to YouTube. Please check the video ID and your API key.",
       });
-      toggleStreaming(false); // Stop streaming on error
-    }
-  }, [handleNewComment, toast]);
-  
-  const toggleStreaming = useCallback((forceState?: boolean) => {
-    setIsStreaming(current => {
-      const nextState = typeof forceState === 'boolean' ? forceState : !current;
-      if (nextState) { // If turning on
-        if (!youtubeVideoId) {
-          toast({
-            variant: "destructive",
-            title: "YouTube Video ID missing",
-            description: "Please enter a YouTube Live Video ID to start streaming.",
-          });
-          return false;
-        }
-        // Start polling logic
-        console.log(`Starting stream for video ID: ${youtubeVideoId}`);
-        // Reset state for new stream
-        pageTokenRef.current = undefined;
-        seenCommentIds.current.clear();
-        setCommandHistory([]);
-        
-        // This is where you would get the liveChatId from the videoId
-        // For now, we'll simulate it. In a real app, this would be an API call.
-        const mockLiveChatId = 'mock-chat-id-for-' + youtubeVideoId;
-        setLiveChatId(mockLiveChatId);
-
-        pollComments(mockLiveChatId); // Poll immediately
-        pollingIntervalRef.current = setInterval(() => pollComments(mockLiveChatId), 5000);
-
-      } else { // If turning off
-        if (pollingIntervalRef.current) {
-          clearInterval(pollingIntervalRef.current);
-          pollingIntervalRef.current = undefined;
-        }
-        console.log("Stopping stream");
+      setStreamStatus('error');
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = undefined;
       }
-      return nextState;
+    }
+  }, [handleNewComment, toast, streamStatus]);
+  
+  const startStreaming = async () => {
+    if (!youtubeVideoId) {
+      toast({
+        variant: 'destructive',
+        title: 'YouTube Video ID missing',
+        description: 'Please enter a YouTube Live Video ID to start streaming.',
+      });
+      return;
+    }
+
+    setStreamStatus('connecting');
+    toast({
+      title: 'Connecting to stream...',
+      description: 'Attempting to fetch live chat ID.',
     });
-  }, [youtubeVideoId, toast, pollComments]);
+
+    try {
+      const chatId = await getLiveChatId(youtubeVideoId);
+      if (!chatId) {
+        throw new Error('Could not find Live Chat ID for this video.');
+      }
+      setLiveChatId(chatId);
+      
+      // Reset state for new stream
+      pageTokenRef.current = undefined;
+      seenCommentIds.current.clear();
+      setCommandHistory([]);
+
+      await pollComments(chatId); // Poll immediately to confirm connection
+      if (streamStatus !== 'error') {
+         pollingIntervalRef.current = setInterval(() => pollComments(chatId), 6000);
+      }
+
+    } catch (error: any) {
+      console.error('Error starting stream:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Connection Failed',
+        description: error.message || 'Could not connect to the YouTube stream.',
+      });
+      setStreamStatus('error');
+    }
+  };
+
+  const stopStreaming = () => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = undefined;
+    }
+    setStreamStatus('idle');
+    setLiveChatId(null);
+    console.log('Stopping stream');
+  };
+
+  const toggleStreaming = () => {
+    if (isStreaming) {
+      stopStreaming();
+    } else {
+      startStreaming();
+    }
+  };
   
   const addKeyword = (keyword: string) => {
     const newKeyword = keyword.trim().toLowerCase();
@@ -236,6 +275,7 @@ export function useGameEngine() {
     keywords,
     commandHistory,
     isStreaming,
+    streamStatus,
     isProcessing,
     displayMode,
     activeMedia,
